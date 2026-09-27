@@ -30,16 +30,19 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov httpx
 
-    - name: Build Native C11 Lexer (Linux)
+    - name: Build Native C11 Shared Core (Linux)
       if: runner.os == 'Linux'
       run: |
-        gcc -O3 -shared -fPIC -std=c11 -pthread src_native/c11_lexer.c -o bin/c11_lexer.so || echo "Native build fallback"
+        mkdir -p bin
+        gcc -O3 -shared -fPIC -std=c11 -pthread -DSENTRY_EXPORTS src_native/*.c -o bin/libsentry_native.so || echo "Native build fallback"
+        gcc -O3 -std=c11 -pthread -DSENTRY_CLI_APP src_native/*.c -o bin/sentry_cli || echo "CLI build fallback"
+        chmod +x bin/sentry_cli || true
 
-    - name: Run 171 Automated Tests with Pytest
+    - name: Run Automated Tests with Pytest
       run: |
-        pytest tests/unit/ -v --cov=backend --cov=pkg
+        pytest tests/ -v --cov=backend
 
     - name: Test Server Health Initialization
       run: |
