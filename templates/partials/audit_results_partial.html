@@ -1,0 +1,464 @@
+<div class="space-y-6">
+
+    <!-- DEVICE PROFILE & COMPLIANCE SCORE OVERVIEW -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        <!-- COMPLIANCE SCORE RADIAL CARD ((dot)connect Swiss Blueprint) -->
+        <div class="md:col-span-4 bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 flex flex-col justify-between relative overflow-hidden">
+            <div class="flex justify-between items-center relative z-10 border-b border-[#c1c4c2] pb-3">
+                <span class="text-xs uppercase font-semibold tracking-wider text-[#001011]">Compliance Posture</span>
+                {% if ComplianceEvaluation.Summary.RiskLevel == "CRITICAL" %}
+                <span class="bg-[#fd5321]/10 text-[#fd5321] border border-[#fd5321]/30 text-[11px] px-2.5 py-0.5 rounded-[8px] font-semibold flex items-center gap-1.5">
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#fd5321]"></span> CRITICAL RISK
+                </span>
+                {% elif ComplianceEvaluation.Summary.RiskLevel == "HIGH" %}
+                <span class="bg-[#fd5321]/10 text-[#fd5321] border border-[#fd5321]/30 text-[11px] px-2.5 py-0.5 rounded-[8px] font-semibold flex items-center gap-1.5">
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#fd5321]"></span> HIGH RISK
+                </span>
+                {% else %}
+                <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] text-[11px] px-2.5 py-0.5 rounded-[8px] font-medium flex items-center gap-1.5">
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#001011]"></span> DEFENSE SECURE
+                </span>
+                {% endif %}
+            </div>
+
+            <!-- CIRCULAR RADIAL GAUGE -->
+            <div class="my-5 relative z-10 flex flex-col items-center">
+                <div class="relative w-36 h-36 flex items-center justify-center">
+                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                        <path class="text-[#ededea]" stroke-width="3" stroke="currentColor" fill="none" 
+                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="{% if ComplianceEvaluation.Summary.OverallScore < 60.0 %}text-[#fd5321]{% else %}text-[#001011]{% endif %} transition-all duration-1000 ease-out" 
+                              stroke-dasharray="{{ ComplianceEvaluation.Summary.OverallScore }}, 100" 
+                              stroke-width="3.2" 
+                              stroke-linecap="round" 
+                              stroke="currentColor" 
+                              fill="none" 
+                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div class="absolute flex flex-col items-center justify-center text-center">
+                        <span class="text-3xl font-bold tracking-tight {% if ComplianceEvaluation.Summary.OverallScore < 60.0 %}text-[#fd5321]{% else %}text-[#001011]{% endif %} code-font">
+                            {{ ComplianceEvaluation.Summary.OverallScore }}%
+                        </span>
+                        <span class="text-[9px] uppercase tracking-wider text-[#0f1e1f]/70 font-semibold mt-0.5">Hardening</span>
+                    </div>
+                </div>
+
+                <div class="text-[11px] text-[#0f1e1f]/80 mt-1 font-medium text-center">Overall Sovereign Hardening Index</div>
+                
+                <!-- SUMMARY COUNTER PILLS -->
+                <div class="flex flex-wrap justify-center gap-2 text-xs mt-3 code-font">
+                    <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2.5 py-0.5 rounded-[20px] font-medium flex items-center gap-1.5">
+                        <span class="h-1.5 w-1.5 rounded-full bg-[#001011]"></span> {{ ComplianceEvaluation.Summary.PassedCount }} Pass
+                    </span>
+                    <span class="bg-[#fd5321]/10 text-[#fd5321] border border-[#fd5321]/30 px-2.5 py-0.5 rounded-[20px] font-semibold flex items-center gap-1.5">
+                        <span class="h-1.5 w-1.5 rounded-full bg-[#fd5321]"></span> {{ ComplianceEvaluation.Summary.FailedCount }} Fail
+                    </span>
+                    <span class="bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-2.5 py-0.5 rounded-[20px] font-medium flex items-center gap-1.5">
+                        <span class="h-1.5 w-1.5 rounded-full bg-[#0f1e1f]"></span> {{ ComplianceEvaluation.Summary.ManualReviewCount }} Laya AI
+                    </span>
+                </div>
+            </div>
+
+            <!-- FRAMEWORK PROGRESS METERS -->
+            <div class="space-y-2.5 pt-3.5 border-t border-[#c1c4c2] text-xs relative z-10">
+                <div>
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span class="text-[#0f1e1f]/70 font-medium">DISA STIG (DoD)</span>
+                        <span class="font-bold text-[#001011] code-font">{{ ComplianceEvaluation.FrameworkScores.DISASTIGScore }}%</span>
+                    </div>
+                    <div class="w-full bg-[#ededea] rounded-full h-1.5 overflow-hidden border border-[#c1c4c2]">
+                        <div class="bg-[#001011] h-1.5 rounded-full transition-all duration-700" style="width: {{ ComplianceEvaluation.FrameworkScores.DISASTIGScore }}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span class="text-[#0f1e1f]/70 font-medium">CIS Benchmark</span>
+                        <span class="font-bold text-[#001011] code-font">{{ ComplianceEvaluation.FrameworkScores.CISScore }}%</span>
+                    </div>
+                    <div class="w-full bg-[#ededea] rounded-full h-1.5 overflow-hidden border border-[#c1c4c2]">
+                        <div class="bg-[#001011] h-1.5 rounded-full transition-all duration-700" style="width: {{ ComplianceEvaluation.FrameworkScores.CISScore }}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span class="text-[#0f1e1f]/70 font-medium">NIST SP 800-53 Rev 5</span>
+                        <span class="font-bold text-[#001011] code-font">{{ ComplianceEvaluation.FrameworkScores.NISTScore }}%</span>
+                    </div>
+                    <div class="w-full bg-[#ededea] rounded-full h-1.5 overflow-hidden border border-[#c1c4c2]">
+                        <div class="bg-[#001011] h-1.5 rounded-full transition-all duration-700" style="width: {{ ComplianceEvaluation.FrameworkScores.NISTScore }}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-[11px] mb-1">
+                        <span class="text-[#0f1e1f]/70 font-medium">ISO/IEC 27001</span>
+                        <span class="font-bold text-[#001011] code-font">{{ ComplianceEvaluation.FrameworkScores.ISOScore }}%</span>
+                    </div>
+                    <div class="w-full bg-[#ededea] rounded-full h-1.5 overflow-hidden border border-[#c1c4c2]">
+                        <div class="bg-[#001011] h-1.5 rounded-full transition-all duration-700" style="width: {{ ComplianceEvaluation.FrameworkScores.ISOScore }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DEVICE HARDWARE & OPERATING SYSTEM FINGERPRINT -->
+        <div class="md:col-span-8 bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                        <h3 class="font-semibold text-[#001011] text-sm">Discovered Device Hardware Profile</h3>
+                    </div>
+                    <span class="text-[11px] font-mono text-[#0f1e1f] bg-[#ededea] px-2.5 py-0.5 rounded-[8px] border border-[#c1c4c2]">
+                        Audit ID: <span class="text-[#001011] font-bold">{{ Metadata.AuditID }}</span>
+                    </span>
+                </div>
+
+                <!-- UNIFIED TELEMETRY STRIP (Clean Swiss Ash Row) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#c1c4c2] bg-[#ededea] rounded-[16px] border border-[#c1c4c2] p-3.5 text-xs mt-3.5">
+                    <div class="sm:pr-3 py-1">
+                        <span class="text-[#0f1e1f]/60 block text-[10px] uppercase font-bold tracking-wider">Hostname</span>
+                        <span class="font-semibold text-[#001011] code-font text-xs truncate block mt-0.5">{{ DeviceInfo.Hostname }}</span>
+                    </div>
+                    <div class="sm:px-3 py-1">
+                        <span class="text-[#0f1e1f]/60 block text-[10px] uppercase font-bold tracking-wider">Detected Vendor</span>
+                        <span class="font-semibold text-[#001011] text-xs block mt-0.5">{{ DeviceInfo.Vendor }}</span>
+                    </div>
+                    <div class="sm:px-3 py-1">
+                        <span class="text-[#0f1e1f]/60 block text-[10px] uppercase font-bold tracking-wider">Operating System</span>
+                        <span class="font-semibold text-[#001011] text-xs block mt-0.5">{{ DeviceInfo.OSFamily }} {{ DeviceInfo.OSVersion }}</span>
+                    </div>
+                    <div class="sm:pl-3 py-1">
+                        <span class="text-[#0f1e1f]/60 block text-[10px] uppercase font-bold tracking-wider">Hardware Model</span>
+                        <span class="font-semibold text-[#001011] text-xs block mt-0.5 truncate">{{ DeviceInfo.Model }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CRYPTOGRAPHIC SHA-512 SEAL BANNER (STREAMLINED) -->
+            <div class="bg-[#ededea] border border-[#c1c4c2] rounded-[16px] p-4 text-xs space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-[#001011] font-semibold flex items-center gap-2">
+                        <svg class="w-4 h-4 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>CNSA 2.0 SHA-512 Cryptographic Seal</span>
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] text-[#0f1e1f]/70 font-mono">Anchored to Block #{{ Metadata.LedgerBlockIndex }}</span>
+                        <button type="button" onclick="navigator.clipboard.writeText('{{ Metadata.CryptographicSeal }}'); showToast('SHA-512 Seal copied to clipboard');" class="text-[11px] text-[#001011] hover:bg-[#e2e2de] bg-[#fcfbf8] px-3 py-0.5 rounded-[24px] transition flex items-center gap-1 border border-[#c1c4c2] font-medium">
+                            <svg class="w-3 h-3 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                            <span>Copy Seal</span>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-[11px] text-[#001011] code-font break-all select-all font-mono leading-relaxed bg-[#fcfbf8] p-2.5 rounded-[12px] border border-[#c1c4c2]">{{ Metadata.CryptographicSeal }}</p>
+                <div class="flex flex-wrap justify-between items-center text-[10px] text-[#0f1e1f]/60 font-mono pt-0.5 gap-2">
+                    <span>Raw Config Fingerprint: {{ DeviceInfo.RawConfigSHA512[:16] }}...</span>
+                    <span class="text-[#001011] font-semibold flex items-center gap-1">
+                        <span class="h-1.5 w-1.5 rounded-full bg-[#001011]"></span> CNSA 2.0 Tamper-Evident Chain
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NEURO-SYMBOLIC FORMAL VERIFICATION (MICROSOFT Z3 SMT THEOREM PROVER) -->
+    <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#c1c4c2] pb-3">
+            <div class="flex items-center gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                <div>
+                    <h3 class="font-semibold text-[#001011] text-sm flex items-center gap-2">
+                        <span>Neuro-Symbolic Formal Verification (Microsoft Z3 SMT Solver)</span>
+                        <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] text-[10px] px-2 py-0.5 rounded-[8px] font-mono font-medium">First-Order Logic Prover</span>
+                    </h3>
+                    <p class="text-xs text-[#0f1e1f]/70 mt-0.5">Mathematical theorem proving over DISA STIG / CIS security axioms — guarantees zero hallucinations</p>
+                </div>
+            </div>
+            
+            <div>
+                {% if FormalProof.formal_status == 'PROVEN_SECURE' %}
+                <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] text-xs px-3 py-1 rounded-[20px] font-medium flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>INVARIANT PROVEN SECURE (UNSAT: 0 Vulnerability Paths)</span>
+                </span>
+                {% else %}
+                <span class="bg-[#fd5321]/10 text-[#fd5321] border border-[#fd5321]/30 text-xs px-3 py-1 rounded-[20px] font-semibold flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#fd5321]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <span>VULNERABILITY COUNTEREXAMPLE PROVED (SAT)</span>
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 text-xs">
+            <div class="md:col-span-8 space-y-3">
+                <p class="text-[#0f1e1f] text-xs leading-relaxed">
+                    {{ FormalProof.explanation }}
+                </p>
+                {% if FormalProof.counterexample %}
+                <div class="bg-[#ededea] p-3.5 rounded-[16px] border border-[#fd5321]/30 space-y-2">
+                    <span class="text-[10px] uppercase font-bold text-[#fd5321] tracking-wider block font-mono flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-[#fd5321]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <span>Formal Counterexample Axiom Violations Synthesized by Z3:</span>
+                    </span>
+                    <ul class="space-y-1.5 text-[#001011] font-mono text-[11px]">
+                        {% for v in FormalProof.counterexample %}
+                        <li class="flex items-center gap-2 text-[#fd5321] bg-[#fcfbf8] px-2.5 py-1 rounded-[8px] border border-[#c1c4c2]">
+                            <span class="text-[#fd5321] font-bold">✗</span>
+                            <code>{{ v }}</code>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="md:col-span-4 bg-[#ededea] p-3.5 rounded-[16px] border border-[#c1c4c2] space-y-2 text-[11px] font-mono">
+                <div class="text-[#001011] font-semibold uppercase text-[10px] tracking-wider border-b border-[#c1c4c2] pb-1.5">SMT Prover Specification</div>
+                <div class="flex justify-between">
+                    <span class="text-[#0f1e1f]/70">Prover Engine:</span>
+                    <span class="text-[#001011] font-bold">Microsoft Z3 Solver</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-[#0f1e1f]/70">Logic Class:</span>
+                    <span class="text-[#001011]">First-Order SMT Invariants</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-[#0f1e1f]/70">Hallucination Risk:</span>
+                    <span class="text-[#001011] font-bold">0.00% (Mathematical)</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-[#0f1e1f]/70">Execution Mode:</span>
+                    <span class="text-[#001011] font-medium">Air-Gapped Sovereign CPU</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIT FINDINGS TABLE -->
+    <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#c1c4c2] pb-3">
+            <div>
+                <h3 class="font-semibold text-[#001011] text-sm flex items-center gap-2">
+                    <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                    <span>Findings & Vulnerability Matrix</span>
+                    <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] text-xs px-2.5 py-0.5 rounded-[8px] font-mono font-medium">{{ ComplianceEvaluation.Findings|length }} Checks</span>
+                </h3>
+                <p class="text-xs text-[#0f1e1f]/70 mt-0.5">Discrete evaluations mapped to DISA STIGs, CIS, and NIST SP 800-53</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2.5">
+                <div class="flex items-center gap-1 bg-[#ededea] p-1 rounded-[24px] border border-[#c1c4c2] text-[11px]">
+                    <button type="button" onclick="setFilterPill('all', this)" class="filter-pill px-3 py-1 rounded-[20px] font-medium bg-[#001011] text-[#fcfbf8] border border-[#001011] transition">
+                        All ({{ ComplianceEvaluation.Findings|length }})
+                    </button>
+                    <button type="button" onclick="setFilterPill('fail', this)" class="filter-pill px-3 py-1 rounded-[20px] font-normal text-[#0f1e1f] hover:text-[#fd5321] transition">
+                        Failed ({{ ComplianceEvaluation.Summary.FailedCount }})
+                    </button>
+                    <button type="button" onclick="setFilterPill('pass', this)" class="filter-pill px-3 py-1 rounded-[20px] font-normal text-[#0f1e1f] hover:text-[#001011] transition">
+                        Passed ({{ ComplianceEvaluation.Summary.PassedCount }})
+                    </button>
+                </div>
+                <div class="relative">
+                    <input type="text" id="findings-search" onkeyup="filterFindings()" placeholder="Filter checks or Vuln IDs..." 
+                           class="bg-[#ededea] border border-[#c1c4c2] rounded-[24px] pl-3 pr-8 py-1.5 text-xs text-[#001011] code-font focus:outline-none focus:border-[#001011] w-56 placeholder-[#0f1e1f]/40">
+                    <svg class="w-3.5 h-3.5 text-[#0f1e1f]/50 absolute right-3 top-2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="border border-[#c1c4c2] rounded-[16px] overflow-hidden">
+            <table class="w-full text-left text-xs" id="findings-table">
+                <thead class="bg-[#ededea] border-b border-[#c1c4c2] text-[#001011] font-semibold uppercase tracking-wider text-[11px]">
+                    <tr>
+                        <th class="p-3.5">Status</th>
+                        <th class="p-3.5">Severity</th>
+                        <th class="p-3.5">Rule ID & Control Standard</th>
+                        <th class="p-3.5">Evidence Found</th>
+                        <th class="p-3.5">MITRE ATT&CK</th>
+                        <th class="p-3.5 text-right">Remediation</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#c1c4c2] code-font bg-[#fcfbf8]">
+                    {% for f in ComplianceEvaluation.Findings %}
+                    <tr class="hover:bg-[#ededea]/50 transition finding-row">
+                        <!-- STATUS -->
+                        <td class="p-3.5 whitespace-nowrap">
+                            {% if f.Status == "PASS" %}
+                            <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] text-[10px] font-medium px-2.5 py-1 rounded-[8px] flex items-center gap-1.5 w-fit">
+                                <span class="h-1.5 w-1.5 rounded-full bg-[#001011]"></span> PASS
+                            </span>
+                            {% else %}
+                            <span class="bg-[#fd5321]/10 text-[#fd5321] border border-[#fd5321]/30 text-[10px] font-semibold px-2.5 py-1 rounded-[8px] flex items-center gap-1.5 w-fit">
+                                <span class="h-1.5 w-1.5 rounded-full bg-[#fd5321]"></span> FAIL
+                            </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- SEVERITY -->
+                        <td class="p-3.5 whitespace-nowrap">
+                            {% if f.Severity == "CRITICAL" %}
+                            <span class="text-[#fd5321] font-semibold bg-[#fd5321]/10 border border-[#fd5321]/20 px-2 py-0.5 rounded-[8px] text-[11px]">CAT I (Critical)</span>
+                            {% elif f.Severity == "HIGH" %}
+                            <span class="text-[#fd5321] font-medium bg-[#fd5321]/10 border border-[#fd5321]/20 px-2 py-0.5 rounded-[8px] text-[11px]">CAT II (High)</span>
+                            {% elif f.Severity == "MEDIUM" %}
+                            <span class="text-[#001011] font-medium bg-[#ededea] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] text-[11px]">CAT II (Medium)</span>
+                            {% else %}
+                            <span class="text-[#0f1e1f] font-normal bg-[#ededea] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] text-[11px]">CAT III (Low)</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- RULE & TITLE -->
+                        <td class="p-3.5 max-w-xs">
+                            <div class="font-semibold text-[#001011] font-sans text-xs">{{ f.Title }}</div>
+                            <div class="text-[10px] text-[#001011] mt-0.5 font-mono font-medium">{{ f.RuleID }}</div>
+                            <div class="text-[10px] text-[#0f1e1f]/60 mt-0.5">{{ f.ControlReference }}</div>
+                        </td>
+
+                        <!-- EVIDENCE -->
+                        <td class="p-3.5 max-w-sm">
+                            <div class="text-[#001011] bg-[#ededea] px-2.5 py-1.5 rounded-[8px] border border-[#c1c4c2] text-[11px] leading-relaxed break-words font-mono">{{ f.FoundValue }}</div>
+                            <div class="text-[10px] text-[#0f1e1f]/60 mt-1">Required: <span class="text-[#001011] font-mono">{{ f.ExpectedValue }}</span></div>
+                        </td>
+
+                        <!-- MITRE ATT&CK -->
+                        <td class="p-3.5 whitespace-nowrap">
+                            {% if f.MITRETechnique %}
+                            <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2.5 py-1 rounded-[8px] text-[10px] font-mono font-medium inline-flex items-center gap-1">
+                                <svg class="w-3 h-3 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 6 4 6h-8z"/></svg>
+                                <span>{{ f.MITRETechnique }}</span>
+                            </span>
+                            {% else %}
+                            <span class="text-[#0f1e1f]/40 font-mono">-</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- ACTION -->
+                        <td class="p-3.5 text-right whitespace-nowrap">
+                            <button onclick="openFixModal('{{ f.RuleID }}', '{{ f.Title|replace('\'', '\\\'') }}', '{{ f.Severity }}', '{{ f.RemediationCLI|replace('\n', '\\n')|replace('\'', '\\\'') }}', '{{ f.RollbackCLI|replace('\n', '\\n')|replace('\'', '\\\'') }}')" 
+                                    class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] text-xs px-3.5 py-1.5 rounded-[24px] transition flex items-center gap-1.5 ml-auto font-medium">
+                                <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                                <span>View Fix</span>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- DYNAMIC OUT-OF-BAND SWAPS (ONLY DELIVERED VIA HTMX ON /api/audit POST, NOT ON INITIAL PAGE LOAD) -->
+    {% if not is_initial_load %}
+        <!-- DYNAMIC OUT-OF-BAND REMEDIATION SWAP -->
+        {% if RemediationBundle %}
+        {% set is_oob = True %}
+        {% include "remediation_partial.html" %}
+        {% endif %}
+
+        <!-- OUT-OF-BAND LEDGER HEIGHT COUNTER UPDATE -->
+        <span id="nav-ledger-height" hx-swap-oob="true" class="font-bold text-[#001011] code-font">Block #{{ Metadata.LedgerBlockIndex }}</span>
+
+        <!-- OUT-OF-BAND LEDGER BLOCKS TIMELINE UPDATE -->
+        {% if LedgerBlocks %}
+        <div id="ledger-blocks-container" hx-swap-oob="true" class="space-y-3">
+            {% for b in LedgerBlocks %}
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] p-4 space-y-2 hover:border-[#001011] transition">
+                <div class="flex flex-wrap items-center justify-between text-xs">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] font-bold code-font">BLOCK #{{ b.block_index }}</span>
+                        <span class="text-[#001011] font-bold">{{ b.audit_id }}</span>
+                        <span class="text-[#0f1e1f]/70">| Node: <span class="text-[#001011] font-mono">{{ b.signer_node }}</span></span>
+                    </div>
+                    <span class="text-[#0f1e1f]/70 text-[11px] code-font">{{ b.timestamp }}</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-[#0f1e1f]/80 pt-1">
+                    <div>Target Device: <span class="text-[#001011] font-semibold">{{ b.device_id }} ({{ b.vendor }})</span></div>
+                    <div>Audit Score: <span class="text-[#001011] font-bold">{{ b.overall_score }}% ({{ b.risk_level }})</span></div>
+                    <div class="truncate">Block Hash: <span class="text-[#001011] code-font">{{ b.block_hash }}...</span></div>
+                </div>
+
+                <div class="text-[11px] bg-[#ededea] p-2.5 rounded-[12px] border border-[#c1c4c2] code-font text-[#001011] break-all flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div><span class="text-[#001011] font-bold">SHA-512 Seal:</span> {{ b.audit_seal }}</div>
+                    <button type="button" onclick="verifyBlockSeal('{{ b.audit_seal }}')" class="self-end sm:self-center bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2.5 py-1 rounded-[16px] text-[10px] font-mono transition shrink-0 flex items-center gap-1">
+                        <svg class="w-3 h-3 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>Verify On-Chain</span>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- OUT-OF-BAND UNMAPPED LINES QUEUE UPDATE -->
+        {% if UnmappedLines %}
+        <tbody id="unmapped-table-body" hx-swap-oob="true" class="divide-y divide-[#c1c4c2] code-font bg-[#fcfbf8]">
+            {% for u in UnmappedLines %}
+            <tr class="hover:bg-[#ededea]/50 transition">
+                <td class="p-3 text-[#0f1e1f]/60">L-{{ u.line_number }}</td>
+                <td class="p-3 font-semibold text-[#001011]">{{ u.raw_text }}</td>
+                <td class="p-3 text-[#001011] font-semibold">{{ u.ai_analysis.suggested_category }}</td>
+                <td class="p-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-16 bg-[#ededea] rounded-full h-1.5 overflow-hidden border border-[#c1c4c2]">
+                            <div class="bg-[#001011] h-1.5 rounded-full" style="width: calc({{ u.ai_analysis.confidence_score }} * 100%)"></div>
+                        </div>
+                        <span class="text-[11px] font-bold text-[#001011]">{{ u.ai_analysis.confidence_score }}</span>
+                    </div>
+                </td>
+                <td class="p-3 text-[#0f1e1f] font-mono">{{ u.ai_analysis.extracted_value }}</td>
+                <td class="p-3 text-right">
+                    <button hx-post="/api/ai/crystallize" 
+                            hx-vals='{"raw_line": "{{ u.raw_text }}", "target_category": "{{ u.ai_analysis.suggested_category }}", "assigned_value": "{{ u.ai_analysis.extracted_value }}", "vendor_scope": "all"}'
+                            hx-target="#crystallize-status-area"
+                            class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-3.5 py-1.5 rounded-[24px] transition flex items-center gap-1 ml-auto">
+                        <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <span>Confirm & Crystallize Rule</span>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+    {% endif %}
+
+</div>
+
+<script>
+window.currentPill = 'all';
+
+function setFilterPill(status, btn) {
+    window.currentPill = status;
+    document.querySelectorAll('.filter-pill').forEach(b => {
+        b.className = 'filter-pill px-3 py-1 rounded-[20px] font-normal text-[#0f1e1f] hover:text-[#001011] transition text-xs';
+    });
+    if (status === 'all') {
+        btn.className = 'filter-pill px-3 py-1 rounded-[20px] font-medium bg-[#001011] text-[#fcfbf8] border border-[#001011] transition text-xs';
+    } else if (status === 'fail') {
+        btn.className = 'filter-pill px-3 py-1 rounded-[20px] font-semibold bg-[#fd5321] text-[#fcfbf8] border border-[#fd5321] transition text-xs';
+    } else {
+        btn.className = 'filter-pill px-3 py-1 rounded-[20px] font-medium bg-[#001011] text-[#fcfbf8] border border-[#001011] transition text-xs';
+    }
+    filterFindings();
+}
+
+function filterFindings() {
+    const searchEl = document.getElementById("findings-search");
+    const input = (searchEl ? searchEl.value : "").toLowerCase();
+    const rows = document.querySelectorAll(".finding-row");
+    const pill = window.currentPill || 'all';
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        const matchesSearch = text.includes(input);
+        const isPass = row.innerText.includes("PASS");
+        const isFail = row.innerText.includes("FAIL");
+        let matchesPill = true;
+        if (pill === 'fail') matchesPill = isFail;
+        if (pill === 'pass') matchesPill = isPass;
+
+        row.style.display = (matchesSearch && matchesPill) ? "" : "none";
+    });
+}
+</script>

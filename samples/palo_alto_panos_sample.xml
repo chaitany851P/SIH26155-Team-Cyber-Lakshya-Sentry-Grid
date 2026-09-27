@@ -1,0 +1,9 @@
+set deviceconfig system hostname dc-panw-fw-01
+set deviceconfig system domain internal.defense.in
+set deviceconfig system ip-address 10.10.100.2 netmask 255.255.255.0
+set deviceconfig system service disable-telnet no
+set deviceconfig system service disable-http no
+set deviceconfig system permitted-ip 0.0.0.0/0
+set deviceconfig system ntp-servers primary-ntp-server 10.10.1.1
+set deviceconfig system ssh-cipher-suites aes128-cbc,3des-cbc
+set deviceconfig system idle-timeout 0

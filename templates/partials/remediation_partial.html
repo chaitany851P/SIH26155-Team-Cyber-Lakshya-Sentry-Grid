@@ -1,0 +1,198 @@
+<div id="remediation-container" {% if is_oob %}hx-swap-oob="true"{% endif %} class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-6">
+    
+    <!-- HEADER & METADATA ((dot)connect Swiss Blueprint) -->
+    <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#c1c4c2] pb-5">
+        <div>
+            <div class="flex items-center gap-2.5">
+                <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                <h2 class="text-base font-semibold text-[#001011] tracking-tight">Dynamic Remediation Center, Ansible Playbooks & Config Diff</h2>
+                <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] text-[10px] px-2.5 py-0.5 rounded-[8px] font-medium font-mono">
+                    {{ RemediationBundle.vendor }} ({{ RemediationBundle.os_family }})
+                </span>
+            </div>
+            <p class="text-xs text-[#0f1e1f]/70 mt-1">
+                Target Node: <strong class="text-[#001011] font-mono">{{ RemediationBundle.hostname }}</strong> • Synthesized hardening commands for <span class="text-[#fd5321] font-semibold">{{ RemediationBundle.failed_count }}</span> detected compliance violations.
+            </p>
+        </div>
+
+        <!-- CATEGORIZED ACTION TOOLBAR (Swiss Pills, Mist Borders) -->
+        <div class="flex flex-col sm:flex-row flex-wrap gap-2.5 w-full lg:w-auto">
+            <!-- GROUP 1: Remediation Assets -->
+            <div class="flex flex-wrap items-center gap-1.5 bg-[#ededea] p-1.5 rounded-[24px] border border-[#c1c4c2]">
+                <button type="button" onclick="copyToClipboard('remediation-script-text')" class="bg-[#fcfbf8] hover:bg-[#e2e2de] text-[#001011] px-3.5 py-1.5 rounded-[20px] text-xs font-medium border border-[#c1c4c2] transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                    <span>Copy CLI Script</span>
+                </button>
+                <button type="button" onclick="downloadScript('remediation_{{ RemediationBundle.hostname }}.cfg', 'remediation-script-text')" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] px-3.5 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download .CFG</span>
+                </button>
+                <button type="button" onclick="downloadScript('remediation_{{ RemediationBundle.hostname }}.yml', 'ansible-playbook-text')" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] px-3.5 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                    <span>Export Ansible Playbook</span>
+                </button>
+                <button type="button" onclick="downloadScript('remediation_{{ RemediationBundle.hostname }}.tf', 'terraform-plan-text')" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] px-3.5 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Terraform .TF</span>
+                </button>
+            </div>
+
+            <!-- GROUP 2: Policy-as-Code & SIEM -->
+            <div class="flex flex-wrap items-center gap-1.5 bg-[#ededea] p-1.5 rounded-[24px] border border-[#c1c4c2]">
+                <a href="/api/policy/inspec" target="_blank" class="bg-[#fcfbf8] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-3 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Chef InSpec Profile</span>
+                </a>
+                <a href="/api/policy/xccdf" target="_blank" class="bg-[#fcfbf8] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-3 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>OpenSCAP XCCDF XML</span>
+                </a>
+                <a href="/api/policy/defectdojo" target="_blank" class="bg-[#fcfbf8] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-3 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    <span>DefectDojo SIEM JSON</span>
+                </a>
+                <a href="/api/policy/rego" target="_blank" class="bg-[#fcfbf8] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-3 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>OPA Rego Rules</span>
+                </a>
+            </div>
+
+            <!-- GROUP 3: Certified Reports -->
+            <div class="flex flex-wrap items-center gap-1.5 bg-[#ededea] p-1.5 rounded-[24px] border border-[#c1c4c2]">
+                <a href="/api/report/pdf" download class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] px-3.5 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>Official PDF Report</span>
+                </a>
+                <a href="/api/report/audit" target="_blank" class="bg-[#fcfbf8] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-3.5 py-1.5 rounded-[20px] text-xs font-medium transition flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                    <span>Printable Certificate</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. CLI HARDENING & PRE-FLIGHT ROLLBACK -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- REMEDIATION CLI -->
+        <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] overflow-hidden flex flex-col">
+            <div class="bg-[#ededea] px-4 py-2.5 border-b border-[#c1c4c2] flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="w-4 h-4 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">✓</span>
+                    <span class="font-semibold text-[#001011] text-xs font-sans">Hardening Commands (To Apply on {{ RemediationBundle.vendor }})</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-[#0f1e1f]/70 font-mono">OS: {{ RemediationBundle.os_family }}</span>
+                    <button type="button" onclick="copyToClipboard('remediation-script-text')" class="text-[10px] text-[#001011] hover:text-[#fd5321] font-medium">Copy</button>
+                </div>
+            </div>
+            <pre id="remediation-script-text" class="p-4 text-xs text-[#001011] code-font overflow-x-auto h-64 select-all leading-relaxed bg-[#ededea]">{{ RemediationBundle.remediation_cli }}</pre>
+        </div>
+
+        <!-- ROLLBACK CLI -->
+        <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] overflow-hidden flex flex-col">
+            <div class="bg-[#ededea] px-4 py-2.5 border-b border-[#c1c4c2] flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="w-4 h-4 rounded-full bg-[#fd5321] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">↺</span>
+                    <span class="font-semibold text-[#001011] text-xs font-sans">Pre-Flight Reverse Rollback Script (Safety Restore)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] text-[#0f1e1f]/70 font-mono">Zero-Impact Revert</span>
+                    <button type="button" onclick="copyToClipboard('rollback-script-text')" class="text-[10px] text-[#001011] hover:text-[#fd5321] font-medium">Copy</button>
+                </div>
+            </div>
+            <pre id="rollback-script-text" class="p-4 text-xs text-[#001011] code-font overflow-x-auto h-64 select-all leading-relaxed bg-[#ededea]">{{ RemediationBundle.rollback_cli }}</pre>
+        </div>
+    </div>
+
+    <!-- 2. VISUAL CONFIGURATION DIFF VIEWER (SIDE-BY-SIDE DYNAMIC GIT-DIFF STYLE) -->
+    <div class="space-y-3 pt-3 border-t border-[#c1c4c2]">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-[#001011] flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">→</span>
+                <span>Visual Configuration Diff Viewer (Live AST Delta for {{ RemediationBundle.hostname }})</span>
+            </span>
+            <span class="text-[11px] font-mono text-[#0f1e1f] bg-[#ededea] px-2.5 py-1 rounded-[8px] border border-[#c1c4c2]">
+                CIS / DISA STIG Baseline Comparison
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 code-font text-xs">
+            <!-- BEFORE DIFF -->
+            <div class="border border-[#c1c4c2] rounded-[16px] overflow-hidden bg-[#fcfbf8]">
+                <div class="bg-[#fd5321]/10 px-3.5 py-2 border-b border-[#fd5321]/20 flex justify-between items-center text-[#fd5321] font-semibold text-[11px]">
+                    <span class="flex items-center gap-1.5">
+                        <span class="text-[#fd5321] font-mono font-bold">-</span>
+                        <span>Original Non-Compliant Configuration</span>
+                    </span>
+                    <span class="text-[10px] bg-[#fd5321]/20 text-[#fd5321] px-2 py-0.5 rounded-[8px] font-mono font-medium">Vulnerable Syntax</span>
+                </div>
+                <div id="diff-before-box" class="p-2 text-[11px] leading-relaxed h-64 overflow-y-auto font-mono bg-[#fcfbf8] divide-y divide-[#c1c4c2]/40">
+                    {% for line in RemediationBundle.config_diff.before %}
+                    <div class="hover:bg-[#fd5321]/5 text-[#fd5321] px-2.5 py-0.5 font-mono flex items-start gap-2">
+                        <span class="text-[#fd5321] select-none font-bold shrink-0">-</span>
+                        <span class="break-all">{{ line }}</span>
+                    </div>
+                    {% else %}
+                    <div class="text-[#0f1e1f]/60 italic p-3">No non-compliant lines detected in configuration.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- AFTER DIFF -->
+            <div class="border border-[#c1c4c2] rounded-[16px] overflow-hidden bg-[#fcfbf8]">
+                <div class="bg-[#ededea] px-3.5 py-2 border-b border-[#c1c4c2] flex justify-between items-center text-[#001011] font-semibold text-[11px]">
+                    <span class="flex items-center gap-1.5">
+                        <span class="text-[#001011] font-mono font-bold">+</span>
+                        <span>Hardened Defense Baseline</span>
+                    </span>
+                    <span class="text-[10px] bg-[#fcfbf8] border border-[#c1c4c2] text-[#001011] px-2 py-0.5 rounded-[8px] font-mono font-medium">Remediated & Verified</span>
+                </div>
+                <div id="diff-after-box" class="p-2 text-[11px] leading-relaxed h-64 overflow-y-auto font-mono bg-[#fcfbf8] divide-y divide-[#c1c4c2]/40">
+                    {% for line in RemediationBundle.config_diff.after %}
+                    <div class="hover:bg-[#ededea]/50 text-[#001011] px-2.5 py-0.5 font-mono flex items-start gap-2">
+                        <span class="text-[#001011] select-none font-bold shrink-0">+</span>
+                        <span class="break-all">{{ line }}</span>
+                    </div>
+                    {% else %}
+                    <div class="text-[#001011] font-mono p-3">✓ Device satisfies 100% of baseline hardening rules.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. ANSIBLE PLAYBOOK EXPORTER (DYNAMIC FOR VENDOR) -->
+    <div class="space-y-2.5 pt-3 border-t border-[#c1c4c2]">
+        <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-[#001011] flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">→</span>
+                <span>Automated Fleet Remediation Playbook (Ansible YAML for {{ RemediationBundle.vendor }})</span>
+            </span>
+            <div class="flex items-center gap-2">
+                <span class="text-[#0f1e1f]/70 font-mono text-[11px]">Target: {{ RemediationBundle.hostname }}</span>
+                <button type="button" onclick="copyToClipboard('ansible-playbook-text')" class="text-[10px] text-[#001011] hover:text-[#fd5321] font-medium">Copy</button>
+            </div>
+        </div>
+        <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] overflow-hidden">
+            <pre id="ansible-playbook-text" class="p-4 text-xs text-[#001011] code-font overflow-x-auto h-48 select-all leading-relaxed bg-[#ededea]">{{ RemediationBundle.ansible_playbook }}</pre>
+        </div>
+    </div>
+
+    <!-- 4. OPENTOFU / TERRAFORM IAC PLAN -->
+    <div class="space-y-2.5 pt-3 border-t border-[#c1c4c2]">
+        <div class="flex items-center justify-between text-xs">
+            <span class="font-semibold text-[#001011] flex items-center gap-2">
+                <span class="w-4 h-4 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">→</span>
+                <span>Cloud Network Perimeter Hardening Plan (OpenTofu / Terraform HCL)</span>
+            </span>
+            <div class="flex items-center gap-2">
+                <span class="text-[#0f1e1f]/70 font-mono text-[11px]">Perimeter Security Group</span>
+                <button type="button" onclick="copyToClipboard('terraform-plan-text')" class="text-[10px] text-[#001011] hover:text-[#fd5321] font-medium">Copy</button>
+            </div>
+        </div>
+        <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] overflow-hidden">
+            <pre id="terraform-plan-text" class="p-4 text-xs text-[#001011] code-font overflow-x-auto h-44 select-all leading-relaxed bg-[#ededea]">{{ RemediationBundle.terraform_hcl }}</pre>
+        </div>
+    </div>
+
+</div>

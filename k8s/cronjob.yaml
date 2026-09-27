@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sentrygrid-nightly-drift-audit
+  namespace: ntro-secops
+spec:
+  schedule: "0 0 * * *" # Daily at midnight UTC
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: drift-scanner
+            image: registry.internal.defense.gov.in/sentrygrid:latest
+            command: ["/app/sentrygrid"]
+            args: ["--mode=nightly-drift-audit", "--target-zone=perimeter-defense"]
+            securityContext:
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
+              runAsUser: 65532

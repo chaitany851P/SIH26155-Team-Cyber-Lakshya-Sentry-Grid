@@ -1,0 +1,124 @@
+{
+  "timestamp": "2026-09-26T08:37:34.519102+00:00",
+  "laya_system_1": {
+    "iterations": 1000,
+    "mean_ms": 0.404,
+    "p50_ms": 0.328,
+    "p95_ms": 0.662,
+    "p99_ms": 1.007,
+    "throughput_cps": 2470.0
+  },
+  "z3_smt_prover": {
+    "iterations": 100,
+    "mean_ms": 1.762,
+    "p95_ms": 2.576,
+    "hallucination_rate": 0.0
+  },
+  "semantic_similarity": {
+    "iterations": 500,
+    "mean_ms": 0.33,
+    "p95_ms": 0.609
+  },
+  "fast_ner": {
+    "iterations": 1000,
+    "mean_ms": 0.0208,
+    "p95_ms": 0.0321
+  },
+  "modal_active_learning": {
+    "iterations": 1000,
+    "mean_ms": 0.0154
+  },
+  "cnsa_sha512": {
+    "iterations": 5000,
+    "throughput_seals_per_sec": 150576.6
+  },
+  "ciscoconfparse_ast": {
+    "iterations": 100,
+    "mean_ms": 4.811,
+    "p95_ms": 6.24
+  },
+  "multi_vendor_audits": [
+    {
+      "vendor": "Cisco",
+      "model": "Catalyst 9300-48P",
+      "score": 14.3,
+      "risk": "CRITICAL",
+      "latency_ms": 6.86
+    },
+    {
+      "vendor": "Generic / White-Box",
+      "model": "Virtual / Disaggregated Appliance",
+      "score": 28.6,
+      "risk": "CRITICAL",
+      "latency_ms": 4.49
+    },
+    {
+      "vendor": "Open Networking (White-Box)",
+      "model": "Edgecore AS7712-32X",
+      "score": 28.6,
+      "risk": "CRITICAL",
+      "latency_ms": 6.37
+    },
+    {
+      "vendor": "Palo Alto Networks",
+      "model": "PA-3260 Next-Gen Firewall",
+      "score": 28.6,
+      "risk": "CRITICAL",
+      "latency_ms": 4.02
+    },
+    {
+      "vendor": "Fortinet",
+      "model": "FortiGate 100F",
+      "score": 28.6,
+      "risk": "CRITICAL",
+      "latency_ms": 3.48
+    },
+    {
+      "vendor": "Arista Networks",
+      "model": "7050SX3-48YC8",
+      "score": 14.3,
+      "risk": "CRITICAL",
+      "latency_ms": 2.09
+    },
+    {
+      "vendor": "Cumulus Networks",
+      "model": "Mellanox SN2700",
+      "score": 28.6,
+      "risk": "CRITICAL",
+      "latency_ms": 1.95
+    },
+    {
+      "vendor": "Generic / White-Box",
+      "model": "Virtual / Disaggregated Appliance",
+      "score": 14.3,
+      "risk": "CRITICAL",
+      "latency_ms": 2.33
+    },
+    {
+      "vendor": "Huawei",
+      "model": "CloudEngine 6857",
+      "score": 14.3,
+      "risk": "CRITICAL",
+      "latency_ms": 2.84
+    }
+  ],
+  "opa_rego_policy": {
+    "iterations": 1000,
+    "mean_ms": 0.001,
+    "throughput_decisions_per_sec": 534673.6
+  },
+  "openscap_xccdf": {
+    "iterations": 500,
+    "mean_ms": 0.0058,
+    "reports_per_sec": 137965.3
+  },
+  "nornir_fleet_audit": {
+    "devices_audited": 100,
+    "total_ms": 0.23,
+    "ms_per_device": 0.002
+  },
+  "openconfig_yang": {
+    "iterations": 1000,
+    "mean_ms": 0.0009
+  }
+}

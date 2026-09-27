@@ -1,0 +1,30 @@
+# SENTRY-GRID Python Dependencies
+# National Technical Research Organisation (NTRO) • SIH26155
+
+# Web Framework & Core Runtime
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+jinja2>=3.1.4
+pydantic>=2.8.0
+python-multipart>=0.0.9
+requests>=2.32.0
+
+# AI / NLP & Formal SMT Verification
+torch>=2.2.0
+z3-solver>=4.13.0.0
+numpy>=1.26.0
+
+# Certified PDF Generation
+reportlab>=4.2.0
+
+# Multi-Vendor AST & CLI Parsing (Layer 2)
+ciscoconfparse>=1.9.0
+hier-config>=2.2.0
+ttp>=0.9.0
+textfsm>=1.1.3
+pyyaml>=6.0.1
+
+# Device Ingestion & Communication Drivers (Layer 1)
+netmiko>=4.4.0
+napalm>=5.0.0
+scrapli>=2024.1.0

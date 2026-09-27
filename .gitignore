@@ -1,0 +1,88 @@
+# ==============================================================================
+# SENTRY-GRID: Official .gitignore
+# Problem Statement: SIH26155 | Team: Team Cyber Lakshya
+# ==============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.pyo
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Playwright & Browser automation
+.playwright-mcp/
+test-results/
+
+# Runtime Logs, PIDs, & Temporary Artifacts
+*.log
+*.err
+*.pid
+sentrygrid.log
+sentrygrid.err
+sentrygrid.pid
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment & Local Secrets
+.env
+.env.local
+.env.*.local
+
+# Office temporary lock files
+~$*
+* (1).pptx
+* (2).pptx
+* (1).pdf

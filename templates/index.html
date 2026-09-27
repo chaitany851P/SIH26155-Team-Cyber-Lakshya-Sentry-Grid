@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENTRY-GRID | Sovereign AI Multi-Vendor Network Compliance Platform</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+                    },
+                    colors: {
+                        bone: '#fcfbf8',
+                        charcoal: '#001011',
+                        smoke: '#0f1e1f',
+                        ash: '#ededea',
+                        mist: '#c1c4c2',
+                        ember: '#fd5321',
+                        'signal-blue': '#007aff',
+                        cyber: {
+                            bg: '#fcfbf8',
+                            card: '#fcfbf8',
+                            surface: '#ededea',
+                            border: '#c1c4c2',
+                            borderHover: '#001011',
+                            accent: '#001011',
+                            emerald: '#001011',
+                            amber: '#fd5321',
+                            crimson: '#fd5321',
+                            indigo: '#001011'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #fcfbf8; 
+            color: #001011; 
+            font-family: "Plus Jakarta Sans", Inter, sans-serif; 
+            letter-spacing: -0.012em; 
+        }
+        .code-font { font-family: "JetBrains Mono", monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #fcfbf8; }
+        ::-webkit-scrollbar-thumb { background: #c1c4c2; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #001011; }
+        .swiss-header { letter-spacing: -0.025em; }
+        .swiss-card { background: #fcfbf8; border: 1px solid #c1c4c2; border-radius: 20px; }
+        .swiss-btn { border-radius: 24px; }
+        .swiss-pill { border-radius: 44px; }
+        .vendor-card-active { 
+            border-color: #001011 !important; 
+            background-color: #ededea !important; 
+        }
+        .htmx-indicator {
+            display: none !important;
+        }
+        .htmx-request .htmx-indicator,
+        .htmx-request.htmx-indicator {
+            display: inline-block !important;
+        }
+    </style>
+</head>
+<body class="text-[#001011] min-h-screen flex flex-col bg-[#fcfbf8] selection:bg-[#fd5321]/20 selection:text-[#001011]">
+
+    <!-- TOP DEFENSE NAVIGATION BAR ((dot)connect Swiss Blueprint) -->
+    <header class="border-b border-[#c1c4c2] bg-[#fcfbf8] sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-3.5">
+            <div class="h-9 w-9 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-medium text-base text-[#001011] tracking-tight">(dot)connect <span class="text-[#0f1e1f]/40 font-normal">/</span> <strong class="font-semibold">SENTRY<span class="text-[#fd5321]">GRID</span></strong></span>
+                    <span class="text-[11px] font-medium tracking-wide bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px]">NTRO Defense Edition</span>
+                    <span class="hidden sm:inline-flex text-[11px] font-medium tracking-wide bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] items-center gap-1.5">
+                        <span class="h-1.5 w-1.5 rounded-full bg-[#001011]"></span> Air-Gapped Sovereign Node
+                    </span>
+                </div>
+                <div class="flex items-center gap-3 text-xs text-[#0f1e1f]/70 mt-0.5">
+                    <span>AI-Driven Multi-Vendor Compliance & Remediation</span>
+                    <span class="text-[#c1c4c2]">•</span>
+                    <span class="font-mono text-[11px] text-[#0f1e1f]/70 flex items-center gap-1">
+                        <svg class="w-3 h-3 text-[#0f1e1f]/50 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span id="utc-clock">2026-09-26 UTC</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT METRICS & LEDGER STATUS -->
+        <div class="flex items-center gap-3 text-xs">
+            <div class="hidden lg:flex items-center gap-2 bg-[#ededea] border border-[#c1c4c2] px-3.5 py-1.5 rounded-[20px]">
+                <span class="text-[#0f1e1f]/70">Ledger Height:</span>
+                <span id="nav-ledger-height" class="font-bold text-[#001011] font-mono">Block #{{ LedgerHeight }}</span>
+            </div>
+            <div class="hidden xl:flex items-center gap-2 bg-[#ededea] border border-[#c1c4c2] px-3 py-1.5 rounded-[20px]">
+                <span class="text-[#0f1e1f]/70">Native C Core:</span>
+                <span class="font-bold text-emerald-700 font-mono flex items-center gap-1.5 text-[11px]">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+                    C11 AVX (160µs)
+                </span>
+            </div>
+            <div class="hidden md:flex items-center gap-2 bg-[#ededea] border border-[#c1c4c2] px-3.5 py-1.5 rounded-[20px]">
+                <span class="text-[#0f1e1f]/70">Laya Dual-AI:</span>
+                <span class="font-semibold text-[#001011] font-mono">PyTorch + Z3 SMT (&lt;1ms)</span>
+            </div>
+
+            <!-- FILLED CTA BUTTON (EMBER) - The single deliberate orange punctuation -->
+            <a href="/api/ledger/blocks" target="_blank" class="bg-[#fd5321] hover:bg-[#e04515] text-[#fcfbf8] px-5 py-2 rounded-[24px] font-medium transition text-xs flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <span>Inspect Ledger ↗</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+        <!-- TAB NAVIGATION ((dot)connect Architectural Line Bar) -->
+        <div class="flex border-b border-[#c1c4c2] gap-2 pb-px text-xs sm:text-sm font-normal">
+            <button onclick="switchTab('audit-hub')" id="tab-btn-audit-hub" class="tab-btn px-4 py-2.5 border-b-2 border-[#001011] text-[#001011] font-medium flex items-center gap-2 transition">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+                <span>Audit Hub & Ingestion</span>
+                <span class="text-[10px] font-mono bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-1.5 py-0.5 rounded-[8px]">9 Baselines</span>
+            </button>
+            <button onclick="switchTab('laya-studio')" id="tab-btn-laya-studio" class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-[#0f1e1f]/60 hover:text-[#001011] flex items-center gap-2 transition">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.25-.57 2.37-1.46 3.1a4 4 0 0 1 2.46 3.7c0 1.3-.62 2.46-1.58 3.2A4 4 0 1 1 8 16a4 4 0 0 1-1.58-3.2 4 4 0 0 1 2.46-3.7A4 4 0 0 1 8 6a4 4 0 0 1 4-4z"/></svg>
+                <span>Laya Neural & SMT Studio</span>
+                <span class="bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] text-[10px] px-1.5 py-0.5 rounded-[8px] font-medium font-mono">PyTorch + Z3</span>
+            </button>
+            <button onclick="switchTab('remediation-hub')" id="tab-btn-remediation-hub" class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-[#0f1e1f]/60 hover:text-[#001011] flex items-center gap-2 transition">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                <span>Actionable Remediation & Playbooks</span>
+                <span class="text-[10px] font-mono bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-1.5 py-0.5 rounded-[8px]">Ansible + Diff</span>
+            </button>
+            <button onclick="switchTab('ledger-hub')" id="tab-btn-ledger-hub" class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-[#0f1e1f]/60 hover:text-[#001011] flex items-center gap-2 transition">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="8" x="2" y="2" rx="1.5"/><rect width="8" height="8" x="14" y="2" rx="1.5"/><rect width="8" height="8" x="14" y="14" rx="1.5"/><rect width="8" height="8" x="2" y="14" rx="1.5"/><path d="M6 10v4"/><path d="M18 10v4"/><path d="M10 6h4"/><path d="M10 18h4"/></svg>
+                <span>Sovereign Immutable Ledger</span>
+                <span class="text-[10px] font-mono bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-1.5 py-0.5 rounded-[8px]">SHA-512</span>
+            </button>
+            <button onclick="switchTab('opensource-hub')" id="tab-btn-opensource-hub" class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-[#0f1e1f]/60 hover:text-[#001011] flex items-center gap-2 transition">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v20"/><path d="M2 12h20"/><path d="m4.93 4.93 14.14 14.14"/><path d="m19.07 4.93-14.14 14.14"/></svg>
+                <span>Open Source Tools Hub</span>
+                <span class="text-[10px] font-mono bg-[#001011] text-[#fcfbf8] px-2 py-0.5 rounded-[8px] font-bold">24+ Tools</span>
+            </button>
+        </div>
+
+
+        <!-- ==================== TAB 1: AUDIT HUB & INGESTION ==================== -->
+        <section id="tab-audit-hub" class="tab-content space-y-6">
+            
+            <!-- INGESTION ROW: INPUT ON LEFT, CONTROLS ON RIGHT -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- CONFIGURATION EDITOR & UPLOAD (Swiss Card 20px radius, bone surface, hairline border) -->
+                <div class="lg:col-span-8 bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#c1c4c2] pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="flex items-center gap-1.5">
+                                <span class="h-2.5 w-2.5 rounded-full bg-[#c1c4c2]"></span>
+                                <span class="h-2.5 w-2.5 rounded-full bg-[#c1c4c2]"></span>
+                                <span class="h-2.5 w-2.5 rounded-full bg-[#001011]"></span>
+                            </div>
+                            <span class="text-xs font-mono text-[#0f1e1f] font-medium pl-2">ingestion / <span class="text-[#001011] font-semibold">running-config.cfg</span></span>
+                        </div>
+                        <!-- INGESTION ACTIONS & FILE UPLOAD -->
+                        <div class="flex flex-wrap items-center gap-2">
+                            <label class="cursor-pointer bg-[#ededea] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-3.5 py-1.5 rounded-[24px] text-xs font-medium flex items-center gap-1.5 transition">
+                                <svg class="w-3.5 h-3.5 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <input type="file" id="config-file-input" onchange="handleFileUpload(event)" class="hidden" accept=".cfg,.conf,.txt,.json,.xml">
+                                <span>Upload Config</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 text-xs text-[#0f1e1f] cursor-pointer bg-[#ededea] px-3 py-1.5 rounded-[24px] border border-[#c1c4c2]">
+                                <input type="checkbox" id="auto-audit-toggle" checked class="rounded-[4px] border-[#c1c4c2] text-[#001011] focus:ring-0">
+                                <span class="text-[11px] text-[#001011] font-medium">Auto-Audit</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <form id="audit-form" hx-post="/api/audit" hx-target="#audit-results-area" hx-indicator="#audit-spinner" class="space-y-3.5">
+                        
+                        <!-- LIVE DYNAMIC SYNTAX & TELEMETRY BAR (Swiss Ash Layer) -->
+                        <div class="flex flex-wrap items-center justify-between text-[11px] font-mono bg-[#ededea] px-3.5 py-2 rounded-[14px] border border-[#c1c4c2] text-[#0f1e1f]">
+                            <div class="flex flex-wrap items-center gap-3.5">
+                                <span>Lines: <strong id="stat-lines" class="text-[#001011] font-bold">0</strong></span>
+                                <span class="text-[#c1c4c2]">|</span>
+                                <span>Words: <strong id="stat-words" class="text-[#001011]">0</strong></span>
+                                <span class="text-[#c1c4c2]">|</span>
+                                <span>Chars: <strong id="stat-chars" class="text-[#001011]">0</strong></span>
+                                <span class="text-[#c1c4c2]">|</span>
+                                <span>Detected Syntax: <strong id="stat-vendor" class="text-[#001011] font-bold">Awaiting Input...</strong></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="clearConfigEditor()" class="text-[#0f1e1f]/70 hover:text-[#fd5321] transition text-[11px] font-medium flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-[#0f1e1f]/70 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                    <span>Clear Editor</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <textarea id="config-text" name="config_text" rows="13" oninput="updateTextStats()" class="w-full bg-[#ededea] border border-[#c1c4c2] rounded-[16px] p-4 text-xs text-[#001011] code-font focus:outline-none focus:border-[#001011] focus:bg-[#fcfbf8] placeholder-[#0f1e1f]/40 leading-relaxed transition" placeholder="Paste proprietary network configuration here (Cisco IOS/NX-OS, Juniper Junos, Palo Alto PAN-OS, Fortinet FortiOS, Arista EOS, or SONiC Linux)...">{{ InitialConfig }}</textarea>
+                            
+                            <!-- DRAG AND DROP OVERLAY HINT -->
+                            <div class="absolute bottom-3 right-3 text-[11px] text-[#0f1e1f]/60 bg-[#fcfbf8] border border-[#c1c4c2] px-2.5 py-1 rounded-[8px] font-mono">
+                                Supports: .cfg, .conf, .txt, .json, .xml
+                            </div>
+                        </div>
+
+                        <!-- TARGET FRAMEWORKS SELECTION -->
+                        <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-semibold text-[#001011] block">Defense Standards & Axioms:</span>
+                                <div class="flex flex-wrap items-center gap-2 text-xs">
+                                    <label class="flex items-center gap-2 cursor-pointer bg-[#ededea] hover:bg-[#fcfbf8] px-3 py-1.5 rounded-[8px] border border-[#c1c4c2] hover:border-[#001011] transition">
+                                        <input type="checkbox" name="framework_cis" checked class="rounded border-[#c1c4c2] text-[#001011] focus:ring-0">
+                                        <span class="text-[#001011] font-medium font-mono text-[11px]">CIS Benchmark v2.0</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer bg-[#ededea] hover:bg-[#fcfbf8] px-3 py-1.5 rounded-[8px] border border-[#c1c4c2] hover:border-[#001011] transition">
+                                        <input type="checkbox" name="framework_stig" checked class="rounded border-[#c1c4c2] text-[#001011] focus:ring-0">
+                                        <span class="text-[#001011] font-medium font-mono text-[11px]">DISA STIG CAT I/II/III</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer bg-[#ededea] hover:bg-[#fcfbf8] px-3 py-1.5 rounded-[8px] border border-[#c1c4c2] hover:border-[#001011] transition">
+                                        <input type="checkbox" name="framework_nist" checked class="rounded border-[#c1c4c2] text-[#001011] focus:ring-0">
+                                        <span class="text-[#001011] font-medium font-mono text-[11px]">NIST SP 800-53 Rev 5</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer bg-[#ededea] hover:bg-[#fcfbf8] px-3 py-1.5 rounded-[8px] border border-[#c1c4c2] hover:border-[#001011] transition">
+                                        <input type="checkbox" name="framework_iso" checked class="rounded border-[#c1c4c2] text-[#001011] focus:ring-0">
+                                        <span class="text-[#001011] font-medium font-mono text-[11px]">ISO/IEC 27001</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-2.5">
+                                <!-- NATIVE C11 AUDIT TRIGGER (High-Speed Engine in Microseconds) -->
+                                <button type="button" hx-post="/api/audit/native" hx-include="#config-text" hx-target="#ast-inspector-results" hx-indicator="#native-spinner" class="bg-[#ededea] hover:bg-[#001011] hover:text-[#fcfbf8] text-[#001011] border border-[#c1c4c2] hover:border-[#001011] font-mono font-medium text-xs px-3.5 py-2 rounded-[24px] transition flex items-center gap-1.5" title="Audit configuration via compiled Native C11 Engine in microseconds">
+                                    <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    <span>Native C11 Audit (µs)</span>
+                                    <span id="native-spinner" class="htmx-indicator animate-spin">⟳</span>
+                                </button>
+                                <!-- GHOST / OUTLINED ACTION (Signal Blue #007aff) -->
+                                <button type="button" hx-post="/api/ast/parse" hx-include="#config-text" hx-target="#ast-inspector-results" hx-indicator="#ast-spinner" class="bg-transparent hover:bg-[#007aff]/5 text-[#007aff] border border-[#007aff] font-medium text-xs px-4 py-2 rounded-[24px] transition flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-[#007aff]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    <span>Inspect AST Hierarchy</span>
+                                    <span id="ast-spinner" class="htmx-indicator animate-spin">⟳</span>
+                                </button>
+                                <!-- ARROW PILL BUTTON (Charcoal Ink #001011 with Circle Icon) -->
+                                <button type="submit" id="btn-execute-audit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs rounded-[44px] pl-2 pr-6 py-2 transition flex items-center gap-2.5">
+                                    <span class="w-7 h-7 rounded-full bg-[#fcfbf8] text-[#001011] flex items-center justify-center font-bold">
+                                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </span>
+                                    <span>Execute Compliance Audit</span>
+                                    <span id="audit-spinner" class="htmx-indicator animate-spin">⟳</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="ast-inspector-results"></div>
+                </div>
+
+                <!-- RIGHT SIDE: QUICK STATS, VENDOR GRID & NORNIR FLEET AUDIT -->
+                <div class="lg:col-span-4 space-y-4">
+                    <!-- MULTI-VENDOR QUICK AUDIT BUTTONS -->
+                    <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-5 space-y-3">
+                        <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-2.5">
+                            <h3 class="text-xs font-semibold uppercase tracking-wider text-[#001011] flex items-center gap-2">
+                                <span class="w-4 h-4 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">→</span>
+                                <span>Multi-Vendor Quick Audit</span>
+                            </h3>
+                            <span class="text-[10px] text-[#0f1e1f] font-mono bg-[#ededea] px-2 py-0.5 rounded-[8px] border border-[#c1c4c2]">9 Baselines</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            {% for s in Samples %}
+                            <button type="button" id="preset-btn-{{ s.ID }}" onclick="loadPreset('{{ s.ID }}')" class="preset-btn flex flex-col text-left p-2.5 rounded-[12px] bg-[#ededea] hover:bg-[#fcfbf8] border border-[#c1c4c2] hover:border-[#001011] transition group">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-[#001011] truncate">{{ s.Vendor }}</span>
+                                    <span class="h-1.5 w-1.5 rounded-full bg-[#c1c4c2] group-hover:bg-[#001011]"></span>
+                                </div>
+                                <span class="text-[10px] text-[#0f1e1f]/60 truncate mt-0.5 font-mono">{{ s.Name.split('(')[0] }}</span>
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- NORNIR CONCURRENT FLEET AUDITOR -->
+                    <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-5 space-y-3">
+                        <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-2.5">
+                            <h3 class="text-xs font-semibold uppercase tracking-wider text-[#001011] flex items-center gap-2">
+                                <span class="w-4 h-4 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">→</span>
+                                <span>Nornir Fleet Auditor</span>
+                            </h3>
+                            <span class="text-[10px] bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] font-medium font-mono">(02) Thread-Pool</span>
+                        </div>
+                        <p class="text-xs text-[#0f1e1f]/80 leading-relaxed">
+                            Simulate concurrent multi-threaded fleet compliance auditing across border routers, spine switches, and firewalls using Nornir.
+                        </p>
+                        <form hx-post="/api/collector/nornir-fleet" hx-target="#fleet-audit-results" hx-indicator="#fleet-spinner" class="space-y-2.5">
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs text-[#0f1e1f] font-mono">Nodes:</label>
+                                <select name="device_count" class="bg-[#ededea] border border-[#c1c4c2] rounded-[12px] px-2.5 py-1.5 text-xs text-[#001011] focus:outline-none focus:border-[#001011] font-mono">
+                                    <option value="5">5 Nodes (Quick Test)</option>
+                                    <option value="20">20 Nodes (Pod Fleet)</option>
+                                    <option value="50">50 Nodes (Enterprise Core)</option>
+                                    <option value="100">100 Nodes (National Defense Fleet)</option>
+                                </select>
+                                <button type="submit" class="flex-1 bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs py-2 px-3 rounded-[24px] transition flex items-center justify-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-2 2.5h3L11 10l5-1.5-2 3.5h3L11 22l2-7H9.5L13 2z"/></svg>
+                                    <span>Audit Fleet</span>
+                                    <span id="fleet-spinner" class="htmx-indicator animate-spin">⟳</span>
+                                </button>
+                            </div>
+                        </form>
+                        <div id="fleet-audit-results"></div>
+                    </div>
+
+                    <!-- LIVE ENGINE SPECIFICATIONS & TELEMETRY -->
+                    <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-5 space-y-3">
+                        <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-2.5">
+                            <h3 class="text-xs font-semibold uppercase tracking-wider text-[#001011] flex items-center gap-2">
+                                <span class="w-4 h-4 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-[9px] font-bold">→</span>
+                                <span>Engine Telemetry</span>
+                            </h3>
+                            <span class="text-[10px] bg-[#ededea] text-[#0f1e1f] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] font-medium flex items-center gap-1.5">
+                                <span class="h-1.5 w-1.5 rounded-full bg-[#001011]"></span> Active Enclave
+                            </span>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between py-1 border-b border-[#c1c4c2]/60">
+                                <span class="text-[#0f1e1f]/70">Inference Core:</span>
+                                <span class="text-[#001011] font-semibold font-mono">PyTorch Tensor Core</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-[#c1c4c2]/60">
+                                <span class="text-[#0f1e1f]/70">Formal SMT Prover:</span>
+                                <span class="text-[#001011] font-semibold font-mono">Microsoft Z3 (0.00% Error)</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-[#c1c4c2]/60">
+                                <span class="text-[#0f1e1f]/70">Confidence Gate:</span>
+                                <span class="text-[#001011] font-semibold font-mono">&ge; 0.95 (modAL Learning)</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-[#c1c4c2]/60">
+                                <span class="text-[#0f1e1f]/70">Ledger Block Height:</span>
+                                <span class="text-[#001011] font-semibold font-mono">Block #{{ LedgerHeight }}</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-[#c1c4c2]/60">
+                                <span class="text-[#0f1e1f]/70">Active Rule Cache:</span>
+                                <span class="text-[#001011] font-semibold font-mono">{{ ActiveHeuristics|length }} In-Memory Rules</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-[#0f1e1f]/70">Runtime Container:</span>
+                                <span class="text-[#001011] font-semibold font-mono">Distroless (Zero Shell)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- AUDIT RESULTS AREA (POPULATED VIA HTMX) -->
+            <div id="audit-results-area" class="space-y-6">
+                <!-- Initial Mock Audit / Results Display -->
+                {% set ComplianceEvaluation = InitialAudit.ComplianceEvaluation %}
+                {% set DeviceInfo = InitialAudit.DeviceInfo %}
+                {% set Metadata = InitialAudit.Metadata %}
+                {% set FormalProof = InitialAudit.FormalProof %}
+                {% set is_initial_load = True %}
+                {% include "audit_results_partial.html" %}
+            </div>
+
+        </section>
+
+        <!-- ==================== TAB 2: LAYA AI DATA TRAINING & ACTIVE LEARNING STUDIO ==================== -->
+        <section id="tab-laya-studio" class="tab-content hidden space-y-6">
+            
+            <!-- SECTION 1: INTERACTIVE REAL-TIME COMMAND TRAINER -->
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#c1c4c2] pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                            <h2 class="text-base font-semibold text-[#001011]">Laya Dual-AI: PyTorch Neural Classifier & Active Learning Studio</h2>
+                            <span class="text-xs text-[#0f1e1f]/60 font-mono">(01)</span>
+                        </div>
+                        <p class="text-xs text-[#0f1e1f]/80 mt-1 max-w-4xl">
+                            100% sovereign air-gapped dual-AI: (1) System-1 PyTorch Deep Neural Network (<code class="text-[#001011] bg-[#ededea] px-1 py-0.5 rounded font-mono">nn.EmbeddingBag</code> + LayerNorm + MLP) running in &lt;1ms on CPU with online AdamW backpropagation, and (2) System-2 Microsoft Z3 SMT Theorem Prover providing mathematically proven invariant verification with zero hallucinations.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="/api/ai/dataset" target="_blank" class="bg-[#ededea] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-3.5 py-1.5 rounded-[24px] text-xs font-medium transition flex items-center gap-1.5">
+                            <span>Inspect Training Corpus ↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <form hx-post="/api/ai/evaluate" hx-target="#ai-eval-results" hx-indicator="#trainer-spinner" class="space-y-3">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex-1 relative">
+                            <input type="text" id="interactive-cmd-input" name="command_line" required
+                                   placeholder="Try typing: 'idle-timeout 15', 'admin-telnet disable', 'custom-acl block-telnet', or 'remote-syslog host 10.99.1.1'..."
+                                   class="w-full bg-[#ededea] border border-[#c1c4c2] rounded-[14px] px-3.5 py-2.5 text-xs text-[#001011] code-font focus:outline-none focus:border-[#001011] focus:bg-[#fcfbf8] placeholder-[#0f1e1f]/40 transition">
+                        </div>
+                        <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-6 py-2.5 rounded-[24px] transition flex items-center justify-center gap-2">
+                            <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 2-2 2.5h3L11 10l5-1.5-2 3.5h3L11 22l2-7H9.5L13 2z"/></svg>
+                            <span>Test Laya Inference & Logits</span>
+                            <span id="trainer-spinner" class="htmx-indicator animate-spin">⟳</span>
+                        </button>
+                    </div>
+
+                    <!-- QUICK CLICK SUGGESTIONS -->
+                    <div class="flex flex-wrap items-center gap-2 text-xs text-[#0f1e1f] pt-1">
+                        <span class="text-[11px] text-[#0f1e1f]/60">Quick Test Samples:</span>
+                        <button type="button" onclick="document.getElementById('interactive-cmd-input').value='idle-timeout 15'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2.5 py-0.5 rounded-[8px] text-[11px] text-[#001011] font-mono">
+                            idle-timeout 15
+                        </button>
+                        <button type="button" onclick="document.getElementById('interactive-cmd-input').value='admin-telnet disable'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2.5 py-0.5 rounded-[8px] text-[11px] text-[#001011] font-mono">
+                            admin-telnet disable
+                        </button>
+                        <button type="button" onclick="document.getElementById('interactive-cmd-input').value='remote-syslog host 10.99.100.1'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2.5 py-0.5 rounded-[8px] text-[11px] text-[#001011] font-mono">
+                            remote-syslog host 10.99.100.1
+                        </button>
+                        <button type="button" onclick="document.getElementById('interactive-cmd-input').value='crypto-key rsa-modulus 4096'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2.5 py-0.5 rounded-[8px] text-[11px] text-[#001011] font-mono">
+                            crypto-key rsa-modulus 4096
+                        </button>
+                    </div>
+                </form>
+
+                <div id="ai-eval-results"></div>
+            </div>
+
+            <!-- SECTION 2: BATCH DATASET ACTIVE LEARNING QUEUE -->
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#c1c4c2] pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                            <h2 class="text-base font-semibold text-[#001011]">Unmapped Syntax Queue (Human-in-the-Loop Active Learning)</h2>
+                            <span class="text-xs text-[#0f1e1f]/60 font-mono">(02)</span>
+                        </div>
+                        <p class="text-xs text-[#0f1e1f]/80 mt-1">
+                            Commands evaluated below the &ge; 0.95 confidence gate are quarantined here. Confirming a mapping crystallizes it into persistent memory so future audits map it instantly.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button hx-post="/api/ai/load-batch" hx-target="#unmapped-table-body" 
+                                class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-4 py-2 rounded-[24px] transition flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg>
+                            <span>Load Benchmark Training Dataset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- UNMAPPED COMMANDS QUEUE TABLE -->
+                <div class="border border-[#c1c4c2] rounded-[16px] overflow-hidden">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-[#ededea] border-b border-[#c1c4c2] text-[#001011] font-semibold uppercase tracking-wider text-[11px]">
+                            <tr>
+                                <th class="p-3">Line #</th>
+                                <th class="p-3">Raw Command Syntax</th>
+                                <th class="p-3">Laya AI Suggested Intent</th>
+                                <th class="p-3">Decision Confidence</th>
+                                <th class="p-3">Extracted Entity</th>
+                                <th class="p-3 text-right">Human-in-the-Loop Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unmapped-table-body" class="divide-y divide-[#c1c4c2] code-font bg-[#fcfbf8]">
+                            {% for u in UnmappedLines %}
+                            <tr class="hover:bg-[#ededea]/50 transition">
+                                <td class="p-3 text-[#0f1e1f]/60">L-{{ u.LineNumber }}</td>
+                                <td class="p-3 font-semibold text-[#001011]">{{ u.RawText }}</td>
+                                <td class="p-3 text-[#001011] font-semibold">{{ u.AIAnalysis.SuggestedCategory }}</td>
+                                <td class="p-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-16 bg-[#ededea] rounded-full h-1.5 overflow-hidden border border-[#c1c4c2]">
+                                            <div class="bg-[#001011] h-1.5 rounded-full" style="width: calc({{ u.AIAnalysis.ConfidenceScore }} * 100%)"></div>
+                                        </div>
+                                        <span class="text-[11px] font-bold text-[#001011]">{{ u.AIAnalysis.ConfidenceScore }}</span>
+                                    </div>
+                                </td>
+                                <td class="p-3 text-[#0f1e1f] font-mono">{{ u.AIAnalysis.ExtractedValue }}</td>
+                                <td class="p-3 text-right">
+                                    <button hx-post="/api/ai/crystallize" 
+                                            hx-vals='{"raw_line": "{{ u.RawText }}", "target_category": "{{ u.AIAnalysis.SuggestedCategory }}", "assigned_value": "{{ u.AIAnalysis.ExtractedValue }}", "vendor_scope": "all"}'
+                                            hx-target="#crystallize-status-area"
+                                            class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-3.5 py-1.5 rounded-[24px] transition flex items-center gap-1 ml-auto">
+                                        <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                        <span>Confirm & Crystallize Rule</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="p-6 text-center text-[#0f1e1f]/60 italic">
+                                    No pending unmapped commands in queue. Click "Load Benchmark Training Dataset" above to test active learning!
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="crystallize-status-area"></div>
+            </div>
+
+            <!-- SECTION 3: ACTIVE DYNAMIC HEURISTICS IN MEMORY -->
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                        <h3 class="text-sm font-semibold uppercase tracking-wider text-[#001011]">
+                            Crystallized Heuristic Cache (Zero-Downtime Rule Memory)
+                        </h3>
+                        <span class="text-xs text-[#0f1e1f]/60 font-mono">(03)</span>
+                    </div>
+                    <span id="heuristics-count-badge" class="text-xs text-[#0f1e1f] font-mono bg-[#ededea] border border-[#c1c4c2] px-2.5 py-1 rounded-[8px]">{{ ActiveHeuristics|length }} Active Rules in Memory</span>
+                </div>
+                <div id="active-heuristics-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for h in ActiveHeuristics %}
+                    <div class="bg-[#ededea] border border-[#c1c4c2] p-3.5 rounded-[16px] space-y-2">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <span class="text-[#001011] font-bold code-font">{{ h.rule_id }}</span>
+                            <span class="bg-[#fcfbf8] border border-[#c1c4c2] text-[#001011] px-1.5 py-0.5 rounded-[8px] text-[10px] font-medium">Active in Memory</span>
+                        </div>
+                        <p class="text-xs text-[#001011] code-font truncate" title="{{ h.pattern_regex }}">{{ h.pattern_regex }}</p>
+                        <div class="flex items-center justify-between text-[11px] text-[#0f1e1f]/70 border-t border-[#c1c4c2] pt-2">
+                            <span>Target: <span class="text-[#001011] font-medium">{{ h.target_attribute }}</span></span>
+                            <span>Hits: {{ h.hit_count }}</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-span-3 text-center text-[#0f1e1f]/60 text-xs py-4 italic">
+                        No custom heuristics crystallized yet. Confirm mappings above or train commands to populate the dynamic memory cache.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- SECTION 4: SENTENCE-TRANSFORMERS SEMANTIC VECTOR MATCHER & NER EXTRACTOR -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- SEMANTIC COSINE MATCHER -->
+                <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                            <h3 class="text-sm font-semibold text-[#001011]">Sentence-Transformers Semantic Vector Matcher</h3>
+                        </div>
+                        <span class="text-[10px] text-[#0f1e1f] font-mono bg-[#ededea] px-2 py-0.5 rounded-[8px] border border-[#c1c4c2]">Dense Cosine θ</span>
+                    </div>
+                    <p class="text-xs text-[#0f1e1f]/80">
+                        Computes dense vector representations and cosine similarity $\cos(\mathbf{u}, \mathbf{v})$ against canonical security attributes in &lt;1ms.
+                    </p>
+                    <form hx-post="/api/ai/similarity" hx-target="#similarity-results" hx-indicator="#sim-spinner" class="space-y-3">
+                        <div class="flex gap-2">
+                            <input type="text" id="sim-input" name="command_line" required
+                                   placeholder="e.g. 'no ip http server', 'snmp-server community private RW'..."
+                                   class="flex-1 bg-[#ededea] border border-[#c1c4c2] rounded-[14px] px-3 py-2 text-xs text-[#001011] code-font focus:outline-none focus:border-[#001011]">
+                            <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-4 py-2 rounded-[24px] transition flex items-center gap-1.5 shrink-0">
+                                <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                                </svg>
+                                <span>Compute Cosine θ</span>
+                                <span id="sim-spinner" class="htmx-indicator animate-spin">⟳</span>
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 text-[11px] text-[#0f1e1f]">
+                            <span class="text-[#0f1e1f]/60 text-[10px]">Try:</span>
+                            <button type="button" onclick="document.getElementById('sim-input').value='no ip http server'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] text-[10px] text-[#001011] font-mono">no ip http server</button>
+                            <button type="button" onclick="document.getElementById('sim-input').value='ip ssh timeout 15'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] text-[10px] text-[#001011] font-mono">ip ssh timeout 15</button>
+                            <button type="button" onclick="document.getElementById('sim-input').value='snmp-server community secret RW'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] text-[10px] text-[#001011] font-mono">snmp-server community secret RW</button>
+                        </div>
+                    </form>
+                    <div id="similarity-results"></div>
+                </div>
+
+                <!-- FAST DETERMINISTIC NER EXTRACTOR -->
+                <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                            <h3 class="text-sm font-semibold text-[#001011]">Fast Deterministic NER Tokenizer (spaCy / CLINER)</h3>
+                        </div>
+                        <span class="text-[10px] text-[#0f1e1f] font-mono bg-[#ededea] px-2 py-0.5 rounded-[8px] border border-[#c1c4c2]">20.8 µs Latency</span>
+                    </div>
+                    <p class="text-xs text-[#0f1e1f]/80">
+                        Extracts security-critical parameters (IPs, cipher suites, protocol versions, timeouts, ports) in sub-millisecond execution.
+                    </p>
+                    <form hx-post="/api/ai/ner" hx-target="#ner-results" hx-indicator="#ner-spinner" class="space-y-3">
+                        <div class="flex gap-2">
+                            <input type="text" id="ner-input" name="command_line" required
+                                   placeholder="e.g. 'tacacs server 10.10.50.1 key 7 EncryptedKey', 'crypto ipsec ikev2 proposal AES256'..."
+                                   class="flex-1 bg-[#ededea] border border-[#c1c4c2] rounded-[14px] px-3 py-2 text-xs text-[#001011] code-font focus:outline-none focus:border-[#001011]">
+                            <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-4 py-2 rounded-[24px] transition flex items-center gap-1.5 shrink-0">
+                                <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                                </svg>
+                                <span>Extract Entities</span>
+                                <span id="ner-spinner" class="htmx-indicator animate-spin">⟳</span>
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 text-[11px] text-[#0f1e1f]">
+                            <span class="text-[#0f1e1f]/60 text-[10px]">Try:</span>
+                            <button type="button" onclick="document.getElementById('ner-input').value='logging host 10.99.100.15 transport udp port 514'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] text-[10px] text-[#001011] font-mono">logging host 10.99.100.15 port 514</button>
+                            <button type="button" onclick="document.getElementById('ner-input').value='crypto ipsec transform-set ESP-AES256-SHA512 esp-aes 256 esp-sha512-hmac'" class="bg-[#ededea] hover:bg-[#e2e2de] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] text-[10px] text-[#001011] font-mono">crypto ipsec esp-aes 256</button>
+                        </div>
+                    </form>
+                    <div id="ner-results"></div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: MICROSOFT Z3 SMT THEOREM PROVER INTERACTIVE LAB -->
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#c1c4c2] pb-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                            <h3 class="text-sm font-semibold text-[#001011]">Interactive Neuro-Symbolic Theorem Prover Lab (Microsoft Z3 SMT)</h3>
+                            <span class="text-xs text-[#0f1e1f]/60 font-mono">(05)</span>
+                        </div>
+                        <p class="text-xs text-[#0f1e1f]/80 mt-1">
+                            Directly test mathematical invariant proving. Modify device state assertions below to witness the solver prove satisfiability (SAT counterexample) or unsatisfiability (UNSAT security proof) with 0.00% hallucination rate.
+                        </p>
+                    </div>
+                    <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] text-[10px] px-2.5 py-0.5 rounded-[8px] font-mono font-medium">First-Order SMT</span>
+                </div>
+
+                <form hx-post="/api/ai/smt-prove" hx-target="#smt-prover-results" hx-indicator="#smt-spinner" class="p-4 bg-[#ededea] border border-[#c1c4c2] rounded-[16px] space-y-4 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-[#001011] block mb-1">Telnet Daemon State:</label>
+                            <select name="telnet_enabled" class="w-full bg-[#fcfbf8] border border-[#c1c4c2] rounded-[12px] px-3 py-1.5 text-xs text-[#001011]">
+                                <option value="no">Disabled (no telnet server) ✓</option>
+                                <option value="yes">Enabled (telnet active) ✗</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-[#001011] block mb-1">SSH Protocol Version:</label>
+                            <select name="ssh_version" class="w-full bg-[#fcfbf8] border border-[#c1c4c2] rounded-[12px] px-3 py-1.5 text-xs text-[#001011]">
+                                <option value="2">Version 2 (2048-bit RSA) ✓</option>
+                                <option value="1">Version 1 (Insecure) ✗</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-bold text-[#001011] block mb-1">Inactivity Timeout:</label>
+                            <select name="timeout_seconds" class="w-full bg-[#fcfbf8] border border-[#c1c4c2] rounded-[12px] px-3 py-1.5 text-xs text-[#001011]">
+                                <option value="600">600 seconds (10 mins) ✓</option>
+                                <option value="900">900 seconds (15 mins) ✓</option>
+                                <option value="1800">1800 seconds (30 mins - Insecure) ✗</option>
+                                <option value="0">0 seconds (Disabled / Infinite) ✗</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between pt-2 border-t border-[#c1c4c2] gap-2">
+                        <span class="text-[11px] font-mono text-[#0f1e1f]/70">Security Invariant: ¬(Telnet) ∧ SSH_v2 ∧ (Timeout &le; 900s)</span>
+                        <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-5 py-2 rounded-[24px] transition flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                            </svg>
+                            <span>Execute Z3 SMT Formal Proof</span>
+                            <span id="smt-spinner" class="htmx-indicator animate-spin">⟳</span>
+                        </button>
+                    </div>
+                </form>
+                <div id="smt-prover-results"></div>
+            </div>
+
+        </section>
+
+        <!-- ==================== TAB 3: REMEDIATION, PLAYBOOKS & CONFIG DIFF ==================== -->
+        <section id="tab-remediation-hub" class="tab-content hidden space-y-6">
+            {% set is_oob = False %}
+            {% include "remediation_partial.html" %}
+
+            <!-- INTERACTIVE MULTI-FRAMEWORK POLICY-AS-CODE & CLOUD PERIMETER LAB -->
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#c1c4c2] pb-3">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                            <h3 class="text-base font-semibold text-[#001011]">Interactive Policy-as-Code & Cloud Perimeter Lab</h3>
+                        </div>
+                        <p class="text-xs text-[#0f1e1f]/80 mt-0.5">
+                            Test multi-framework policy evaluation engines: Open Policy Agent (OPA) Rego, Checkov Cloud Security Groups, and OpenConfig RFC 6020 YANG schema.
+                        </p>
+                    </div>
+                    <span class="text-xs text-[#001011] font-mono bg-[#ededea] px-2.5 py-1 rounded-[8px] border border-[#c1c4c2]">Layer 4 Defense Engine</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- OPA REGO TESTER -->
+                    <div class="bg-[#ededea] p-4 rounded-[16px] border border-[#c1c4c2] space-y-3 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-[#001011] text-xs">OPA & Rego Engine</span>
+                                <span class="text-[10px] text-[#0f1e1f]/70 font-mono">v0.60+</span>
+                            </div>
+                            <p class="text-xs text-[#0f1e1f]/80 mt-1">
+                                Evaluates declarative Rego policies over parsed network configurations to enforce CIS and DISA STIG controls.
+                            </p>
+                        </div>
+                        <button type="button" hx-post="/api/policy/opa-eval" hx-target="#lab-results-area" hx-indicator="#lab-spinner-1" class="w-full bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs py-2 px-3 rounded-[24px] transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="m9 12 2 2 4-4"/>
+                            </svg>
+                            <span>Evaluate OPA Rego</span>
+                            <span id="lab-spinner-1" class="htmx-indicator animate-spin">⟳</span>
+                        </button>
+                    </div>
+
+                    <!-- CHECKOV CLOUD SG TESTER -->
+                    <div class="bg-[#ededea] p-4 rounded-[16px] border border-[#c1c4c2] space-y-3 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-[#001011] text-xs">Checkov Static Analysis</span>
+                                <span class="text-[10px] text-[#0f1e1f]/70 font-mono">Bridgecrew</span>
+                            </div>
+                            <p class="text-xs text-[#0f1e1f]/80 mt-1">
+                                Audits perimeter cloud firewall rules & security groups against 0.0.0.0/0 exposure on Telnet (23), HTTP (80), and SSH (22).
+                            </p>
+                        </div>
+                        <button type="button" hx-post="/api/policy/checkov" hx-target="#lab-results-area" hx-indicator="#lab-spinner-2" class="w-full bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs py-2 px-3 rounded-[24px] transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                            </svg>
+                            <span>Audit Cloud SG with Checkov</span>
+                            <span id="lab-spinner-2" class="htmx-indicator animate-spin">⟳</span>
+                        </button>
+                    </div>
+
+                    <!-- OPENCONFIG YANG VALIDATOR -->
+                    <div class="bg-[#ededea] p-4 rounded-[16px] border border-[#c1c4c2] space-y-3 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-[#001011] text-xs">OpenConfig YANG</span>
+                                <span class="text-[10px] text-[#0f1e1f]/70 font-mono">RFC 6020</span>
+                            </div>
+                            <p class="text-xs text-[#0f1e1f]/80 mt-1">
+                                Standardized vendor-neutral data model validation for AAA, system configuration, and network interfaces.
+                            </p>
+                        </div>
+                        <button type="button" hx-post="/api/ast/openconfig-validate" hx-target="#lab-results-area" hx-indicator="#lab-spinner-3" class="w-full bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs py-2 px-3 rounded-[24px] transition flex items-center justify-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 18 22 12 16 6"/>
+                                <polyline points="8 6 2 12 8 18"/>
+                            </svg>
+                            <span>Validate YANG Schema</span>
+                            <span id="lab-spinner-3" class="htmx-indicator animate-spin">⟳</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="lab-results-area"></div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: SOVEREIGN IMMUTABLE LEDGER ==================== -->
+        <section id="tab-ledger-hub" class="tab-content hidden space-y-6">
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#c1c4c2] pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-[#001011] text-[#fcfbf8] flex items-center justify-center text-xs font-bold">→</span>
+                            <h2 class="text-base font-semibold text-[#001011]">
+                                Sovereign Immutable Audit Ledger (Blockchain & Cybersecurity)
+                            </h2>
+                            <span class="text-xs text-[#0f1e1f]/60 font-mono">(01)</span>
+                        </div>
+                        <p class="text-xs text-[#0f1e1f]/80 mt-1">
+                            Every compliance audit is signed with a CNSA 2.0 SHA-512 cryptographic seal and anchored into an append-only block ledger shared between NTRO, CERT-In, and the Asset Owner.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="/api/ledger/blocks" target="_blank" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] px-4 py-2 rounded-[24px] text-xs font-medium transition flex items-center gap-1.5">
+                            Open Blockchain Visual Explorer ↗
+                        </a>
+                    </div>
+                </div>
+
+                <!-- SEAL VERIFIER IN LEDGER TAB -->
+                <div class="bg-[#ededea] border border-[#c1c4c2] rounded-[16px] p-4 space-y-3">
+                    <span class="text-xs font-bold text-[#001011] block">Verify Any Cryptographic Audit Seal On-Chain:</span>
+                    <form hx-post="/api/ledger/verify" hx-target="#tab-verify-result-area" class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="query-hash-input" name="query_hash" required placeholder="Paste SHA-512 Seal or Block Hash to verify authenticity..." 
+                               class="flex-1 bg-[#fcfbf8] border border-[#c1c4c2] rounded-[12px] px-3.5 py-2 text-xs text-[#001011] code-font focus:outline-none focus:border-[#001011]">
+                        <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium text-xs px-5 py-2 rounded-[24px] transition flex items-center gap-1.5 shrink-0">
+                            <svg class="w-3.5 h-3.5 text-[#fcfbf8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="m9 12 2 2 4-4"/>
+                            </svg>
+                            <span>Verify Seal</span>
+                        </button>
+                    </form>
+                    <div id="tab-verify-result-area"></div>
+                </div>
+
+                <!-- BLOCKS TIMELINE -->
+                <div id="ledger-blocks-container" class="space-y-3">
+                    {% for b in LedgerBlocks %}
+                    <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] p-4 space-y-2 hover:border-[#001011] transition">
+                        <div class="flex flex-wrap items-center justify-between text-xs">
+                            <div class="flex items-center gap-3">
+                                <span class="bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px] font-bold code-font">BLOCK #{{ b.block_index }}</span>
+                                <span class="text-[#001011] font-bold">{{ b.audit_id }}</span>
+                                <span class="text-[#0f1e1f]/70">| Node: {{ b.signer_node }}</span>
+                            </div>
+                            <span class="text-[#0f1e1f]/70 text-[11px] code-font">{{ b.timestamp }}</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-[#0f1e1f]/80 pt-1">
+                            <div>Target Device: <span class="text-[#001011] font-semibold">{{ b.device_id }} ({{ b.vendor }})</span></div>
+                            <div>Audit Score: <span class="text-[#001011] font-bold">{{ b.overall_score }}% ({{ b.risk_level }})</span></div>
+                            <div class="truncate">Block Hash: <span class="text-[#001011] code-font">{{ b.block_hash }}...</span></div>
+                        </div>
+
+                        <div class="text-[11px] bg-[#ededea] p-2.5 rounded-[12px] border border-[#c1c4c2] code-font text-[#001011] break-all flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div><span class="text-[#001011] font-bold">SHA-512 Seal:</span> {{ b.audit_seal }}</div>
+                            <button type="button" onclick="verifyBlockSeal('{{ b.audit_seal }}')" class="self-end sm:self-center bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2.5 py-1 rounded-[16px] text-[10px] font-mono transition shrink-0 flex items-center gap-1">
+                                <svg class="w-3 h-3 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                </svg>
+                                <span>Verify On-Chain</span>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: OPEN SOURCE TOOLS HUB ==================== -->
+        <section id="tab-opensource-hub" class="tab-content hidden space-y-6">
+            
+            <!-- SECTION HEADER -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-[#c1c4c2] pb-4 gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded-[8px] bg-[#001011] text-[#fcfbf8]">(05)</span>
+                        <h2 class="text-2xl font-bold tracking-tight text-[#001011]">Open Source Tools Hub & Defense Ecosystem</h2>
+                    </div>
+                    <p class="text-xs text-[#0f1e1f]/70 mt-1 max-w-3xl">
+                        Comprehensive live testbed and architecture matrix showcasing 24+ open-source tools across all 7 layers of defense engineering: Ingestion, AST Parsing, AI/NLP, Policy-as-Code, Remediation, Reporting, and Public Security Benchmarks.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 self-start md:self-auto">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-[20px] bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-mono font-semibold">
+                        <span class="h-2 w-2 rounded-full bg-emerald-600 animate-pulse"></span> 24 Tools Operational
+                    </span>
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-[20px] bg-[#ededea] border border-[#c1c4c2] text-[#001011] text-xs font-mono">
+                        Air-Gapped Sovereign
+                    </span>
+                </div>
+            </div>
+
+            <!-- LIVE INTERACTIVE TESTBED & DISPATCH DECK -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- CARD 1: LAYER 1 INGESTION & LIVE DRIVERS -->
+                <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-[#001011]"></span>
+                            <h3 class="font-bold text-[#001011] text-sm">Layer 1: Multi-Vendor Ingestion & Drivers</h3>
+                        </div>
+                        <span class="text-[10px] font-mono bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px]">Netmiko • Scrapli • NAPALM • Nornir</span>
+                    </div>
+                    <p class="text-xs text-[#0f1e1f]/70">
+                        Dispatch live communication drivers across 100+ hardware platforms, asynchronous screen scrapers, vendor-agnostic getters, and multi-threaded inventory runners.
+                    </p>
+
+                    <!-- Interactive Forms Grid -->
+                    <div class="space-y-3 pt-1">
+                        <!-- Netmiko Live Driver Form -->
+                        <form hx-post="/api/collector/netmiko-live" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-[#001011] font-mono">Netmiko (100+ Platforms SSH)</span>
+                                <span class="text-[10px] text-emerald-800 font-mono bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MIT</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                                <input type="text" name="host" value="10.250.0.1" placeholder="Host IP" class="bg-[#fcfbf8] border border-[#c1c4c2] px-2.5 py-1.5 rounded-[12px] text-xs font-mono text-[#001011]" required>
+                                <select name="platform" class="bg-[#fcfbf8] border border-[#c1c4c2] px-2 py-1.5 rounded-[12px] text-xs font-mono text-[#001011]">
+                                    <option value="cisco_ios">cisco_ios</option>
+                                    <option value="juniper_junos">juniper_junos</option>
+                                    <option value="arista_eos">arista_eos</option>
+                                    <option value="fortinet">fortinet</option>
+                                    <option value="linux_sonic">linux_sonic</option>
+                                </select>
+                                <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium px-3 py-1.5 rounded-[20px] text-xs transition flex items-center justify-center gap-1 col-span-2 sm:col-span-1">
+                                    <span>Run Netmiko</span> ⚡
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Scrapli & NAPALM Dual Trigger -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <form hx-post="/api/collector/scrapli-async" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#001011] font-mono">Scrapli (Async CLI)</span>
+                                    <span class="text-[10px] text-emerald-800 font-mono bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span>
+                                </div>
+                                <input type="hidden" name="host" value="10.250.0.2">
+                                <input type="hidden" name="platform" value="cisco_iosxe">
+                                <p class="text-[11px] text-[#0f1e1f]/70">Ultra-fast async screen-scraper (&lt;5ms latency).</p>
+                                <button type="submit" class="w-full bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] font-medium px-3 py-1.5 rounded-[20px] text-xs transition font-mono flex items-center justify-center gap-1">
+                                    <span>Scrapli Async Poll</span> ↗
+                                </button>
+                            </form>
+
+                            <form hx-post="/api/collector/napalm-facts" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#001011] font-mono">NAPALM (get_facts)</span>
+                                    <span class="text-[10px] text-emerald-800 font-mono bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span>
+                                </div>
+                                <input type="hidden" name="hostname" value="core-gw-border">
+                                <input type="hidden" name="platform" value="ios">
+                                <p class="text-[11px] text-[#0f1e1f]/70">Vendor-agnostic hardware facts & OS getter.</p>
+                                <button type="submit" class="w-full bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] font-medium px-3 py-1.5 rounded-[20px] text-xs transition font-mono flex items-center justify-center gap-1">
+                                    <span>NAPALM Facts</span> ↗
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Nornir Fleet Trigger -->
+                        <form hx-post="/api/collector/nornir-fleet" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-[#001011] font-mono block">Nornir 3.0 Concurrent Fleet Auditor</span>
+                                <span class="text-[11px] text-[#0f1e1f]/70">Multithreaded compliance execution over device inventory</span>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <input type="number" name="device_count" value="5" min="1" max="25" class="w-14 bg-[#fcfbf8] border border-[#c1c4c2] px-2 py-1 rounded-[10px] text-xs font-mono text-[#001011] text-center">
+                                <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium px-3 py-1.5 rounded-[20px] text-xs transition">
+                                    Run Fleet ⚡
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CARD 2: LAYER 2 AST PARSING & DIFFERENTIAL ANALYSIS -->
+                <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-[#001011]"></span>
+                            <h3 class="font-bold text-[#001011] text-sm">Layer 2: AST Parsing, TTP & hier_config</h3>
+                        </div>
+                        <span class="text-[10px] font-mono bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px]">Batfish • TTP • hier_config • Pyang</span>
+                    </div>
+                    <p class="text-xs text-[#0f1e1f]/70">
+                        Decompose proprietary CLI text into standardized Vendor-Independent Data Models (VIDM), calculate order-safe AST deltas, and validate RFC 6020 YANG schemas.
+                    </p>
+
+                    <!-- Interactive Parsers Grid -->
+                    <div class="space-y-3 pt-1">
+                        <!-- Batfish VIDM AST -->
+                        <form hx-post="/api/ast/batfish" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-[#001011] font-mono block">Batfish VIDM AST Extractor</span>
+                                <span class="text-[11px] text-[#0f1e1f]/70">Vendor-independent network modeling & topology graph</span>
+                            </div>
+                            <input type="hidden" name="config_text" value="hostname core-switch-batfish\ninterface GigabitEthernet0/1\n ip address 10.10.10.1 255.255.255.0\n no shutdown\nline vty 0 4\n transport input ssh\n">
+                            <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium px-3 py-1.5 rounded-[20px] text-xs transition shrink-0">
+                                Extract AST ⚡
+                            </button>
+                        </form>
+
+                        <!-- Canonical Baseline Normalizer (Person A Contract) -->
+                        <form hx-post="/api/ast/normalize" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-[#001011] font-mono block">Canonical Baseline Schema (Person A)</span>
+                                <span class="text-[11px] text-[#0f1e1f]/70">Normalizes multi-vendor syntax into canonical_schema.json</span>
+                            </div>
+                            <input type="hidden" name="config_text" value="hostname router-sec-01\nservice password-encryption\nline vty 0 4\n transport input ssh\n exec-timeout 10 0\n">
+                            <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium px-3 py-1.5 rounded-[20px] text-xs transition shrink-0">
+                                Normalize ⚡
+                            </button>
+                        </form>
+
+                        <!-- hier_config & TTP Dual Trigger -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <form hx-post="/api/ast/hier-diff" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#001011] font-mono">hier_config Diff</span>
+                                    <span class="text-[10px] text-emerald-800 font-mono bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span>
+                                </div>
+                                <input type="hidden" name="running_config" value="line vty 0 4\n transport input telnet\n no exec-timeout\n">
+                                <input type="hidden" name="target_baseline" value="line vty 0 4\n transport input ssh\n exec-timeout 10 0\n">
+                                <p class="text-[11px] text-[#0f1e1f]/70">Order-preserving hierarchical remediation delta.</p>
+                                <button type="submit" class="w-full bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] font-medium px-3 py-1.5 rounded-[20px] text-xs transition font-mono flex items-center justify-center gap-1">
+                                    <span>Compute hier_diff</span> ↗
+                                </button>
+                            </form>
+
+                            <form hx-post="/api/ast/openconfig-validate" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-[#001011] font-mono">OpenConfig YANG</span>
+                                    <span class="text-[10px] text-emerald-800 font-mono bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">BSD / RFC 6020</span>
+                                </div>
+                                <input type="hidden" name="config_json" value='{"management_access": {"telnet_disabled": true, "ssh_version": 2}}'>
+                                <p class="text-[11px] text-[#0f1e1f]/70">Standardized RFC 6020 schema validation.</p>
+                                <button type="submit" class="w-full bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] font-medium px-3 py-1.5 rounded-[20px] text-xs transition font-mono flex items-center justify-center gap-1">
+                                    <span>Validate YANG</span> ↗
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: LAYER 4 POLICY-AS-CODE ENGINES -->
+                <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-[#001011]"></span>
+                            <h3 class="font-bold text-[#001011] text-sm">Layer 4: Policy-as-Code & Declarative Governance</h3>
+                        </div>
+                        <span class="text-[10px] font-mono bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px]">OPA / Rego • Checkov • OpenSCAP • InSpec</span>
+                    </div>
+                    <p class="text-xs text-[#0f1e1f]/70">
+                        Enforce declarative security guardrails using Open Policy Agent (Rego), Checkov cloud firewall analysis, OpenSCAP NIST XCCDF 1.2 XML benchmarks, and Chef InSpec profiles.
+                    </p>
+
+                    <!-- Interactive Policy Grid -->
+                    <div class="space-y-3 pt-1">
+                        <!-- OPA Rego Evaluation -->
+                        <form hx-post="/api/policy/opa-eval" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-[#001011] font-mono block">Open Policy Agent (OPA) / Rego Engine</span>
+                                <span class="text-[11px] text-[#0f1e1f]/70">Evaluates CIS & DISA STIG declarative Rego rules</span>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <a href="/api/policy/rego" target="_blank" class="bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2.5 py-1.5 rounded-[16px] text-[11px] font-mono transition">
+                                    Rego Source ↗
+                                </a>
+                                <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium px-3 py-1.5 rounded-[20px] text-xs transition">
+                                    Eval OPA ⚡
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Checkov Static Analysis -->
+                        <form hx-post="/api/policy/checkov" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-[#001011] font-mono block">Checkov Static Cloud Firewall Engine</span>
+                                <span class="text-[11px] text-[#0f1e1f]/70">Analyzes security group ingress/egress rules and open ports</span>
+                            </div>
+                            <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium px-3 py-1.5 rounded-[20px] text-xs transition shrink-0">
+                                Run Checkov ⚡
+                            </button>
+                        </form>
+
+                        <!-- Compliance Exporters (OpenSCAP, InSpec, DefectDojo) -->
+                        <div class="grid grid-cols-3 gap-2 pt-1">
+                            <a href="/api/policy/xccdf" target="_blank" class="p-2.5 bg-[#ededea] hover:bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] text-center transition group">
+                                <span class="text-[10px] font-mono uppercase text-[#0f1e1f]/60 block">NIST OpenSCAP</span>
+                                <span class="text-xs font-bold text-[#001011] group-hover:underline">XCCDF 1.2 XML ↗</span>
+                            </a>
+                            <a href="/api/policy/inspec" target="_blank" class="p-2.5 bg-[#ededea] hover:bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] text-center transition group">
+                                <span class="text-[10px] font-mono uppercase text-[#0f1e1f]/60 block">Chef InSpec</span>
+                                <span class="text-xs font-bold text-[#001011] group-hover:underline">InSpec Profile ↗</span>
+                            </a>
+                            <a href="/api/policy/defectdojo" target="_blank" class="p-2.5 bg-[#ededea] hover:bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] text-center transition group">
+                                <span class="text-[10px] font-mono uppercase text-[#0f1e1f]/60 block">DefectDojo</span>
+                                <span class="text-xs font-bold text-[#001011] group-hover:underline">Dojo JSON ↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4: LAYER 5 & 6 REMEDIATION, REPORTING & NATIVE C11 -->
+                <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                    <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-full bg-[#001011]"></span>
+                            <h3 class="font-bold text-[#001011] text-sm">Layer 5 & 6: Remediation, Reporting & Native C11</h3>
+                        </div>
+                        <span class="text-[10px] font-mono bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-2 py-0.5 rounded-[8px]">Terraform • ReportLab • C11 Engine</span>
+                    </div>
+                    <p class="text-xs text-[#0f1e1f]/70">
+                        Generate automated IaC playbooks, download official NTRO-certified cryptographic PDF reports, and trigger the compiled Native C11 compliance engine running in microseconds.
+                    </p>
+
+                    <!-- Interactive Remediation & Reporting Grid -->
+                    <div class="space-y-3 pt-1">
+                        <!-- Native C11 AVX Audit Trigger -->
+                        <form hx-post="/api/audit/native" hx-target="#opensource-tools-results" class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-[#001011] font-mono block">Native C11 AVX Audit Engine</span>
+                                <span class="text-[11px] text-[#0f1e1f]/70">Evaluates 24 rules in compiled native machine code (&lt;165 µs)</span>
+                            </div>
+                            <button type="submit" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] font-medium px-3 py-1.5 rounded-[20px] text-xs transition shrink-0">
+                                Native C11 Audit ⚡
+                            </button>
+                        </form>
+
+                        <!-- Terraform / OpenTofu IaC Remediation -->
+                        <div class="bg-[#ededea] p-3 rounded-[16px] border border-[#c1c4c2] flex items-center justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-bold text-[#001011] font-mono block">OpenTofu / Terraform Remediation</span>
+                                <span class="text-[11px] text-[#0f1e1f]/70">Generates HCL Infrastructure-as-Code hardening plans</span>
+                            </div>
+                            <a href="/api/remediation/terraform" target="_blank" class="bg-[#fcfbf8] hover:bg-[#ededea] text-[#001011] border border-[#c1c4c2] px-3 py-1.5 rounded-[20px] text-xs font-mono transition shrink-0">
+                                Export HCL ↗
+                            </a>
+                        </div>
+
+                        <!-- ReportLab & Certified Web Report -->
+                        <div class="grid grid-cols-2 gap-3 pt-1">
+                            <a href="/api/report/pdf" target="_blank" class="p-3 bg-[#ededea] hover:bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] flex items-center justify-between transition group">
+                                <div>
+                                    <span class="text-[10px] font-mono uppercase text-[#0f1e1f]/60 block">ReportLab PDF</span>
+                                    <span class="text-xs font-bold text-[#001011] group-hover:underline">Certified Audit PDF ↗</span>
+                                </div>
+                                <svg class="w-4 h-4 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            </a>
+                            <a href="/api/report/audit" target="_blank" class="p-3 bg-[#ededea] hover:bg-[#fcfbf8] border border-[#c1c4c2] rounded-[16px] flex items-center justify-between transition group">
+                                <div>
+                                    <span class="text-[10px] font-mono uppercase text-[#0f1e1f]/60 block">Browser Certificate</span>
+                                    <span class="text-xs font-bold text-[#001011] group-hover:underline">Printable Report ↗</span>
+                                </div>
+                                <svg class="w-4 h-4 text-[#001011]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE HTMX EXECUTION RESULTS STAGE -->
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-3">
+                <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-[#fd5321] animate-ping"></span>
+                        <h3 class="font-bold text-[#001011] text-sm font-mono">Live Tool Execution Console</h3>
+                    </div>
+                    <span class="text-[11px] font-mono text-[#0f1e1f]/60">Real-time Hypermedia Output (HTMX + REST)</span>
+                </div>
+                
+                <div id="opensource-tools-results" class="min-h-[120px] flex items-center justify-center text-xs font-mono text-[#0f1e1f]/60 bg-[#ededea] p-4 rounded-[16px] border border-[#c1c4c2]">
+                    <div class="text-center space-y-1">
+                        <div class="text-sm font-bold text-[#001011]">Ready for Tool Invocation</div>
+                        <div>Click any tool trigger above to execute live drivers, parsers, policy evaluations, or native audits.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MASTER 7-LAYER OPEN-SOURCE TOOLS MATRIX TABLE -->
+            <div class="bg-[#fcfbf8] border border-[#c1c4c2] rounded-[20px] p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#c1c4c2] pb-3 gap-2">
+                    <div>
+                        <h3 class="font-bold text-[#001011] text-sm">Master 7-Layer Open-Source Architecture Matrix</h3>
+                        <p class="text-xs text-[#0f1e1f]/70 mt-0.5">Every open-source component, its license, layer assignment, and sovereign role.</p>
+                    </div>
+                    <span class="text-xs font-mono font-bold bg-[#001011] text-[#fcfbf8] px-3 py-1 rounded-[20px] self-start sm:self-auto">
+                        24+ Tools Cataloged
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto rounded-[16px] border border-[#c1c4c2]">
+                    <table class="w-full text-left text-xs font-sans">
+                        <thead class="bg-[#ededea] border-b border-[#c1c4c2] text-[#001011] font-semibold">
+                            <tr>
+                                <th class="p-3">Layer</th>
+                                <th class="p-3">Tool / Framework</th>
+                                <th class="p-3">License</th>
+                                <th class="p-3">Primary Defense Capability & Architecture</th>
+                                <th class="p-3">Owner</th>
+                                <th class="p-3 text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#c1c4c2] bg-[#fcfbf8] text-[#0f1e1f]">
+                            <!-- Layer 1 -->
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 1</td>
+                                <td class="p-3 font-bold text-[#001011]">Netmiko</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MIT</span></td>
+                                <td class="p-3">Multi-vendor SSH connection engine supporting 100+ network platforms for live configuration extraction.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 1</td>
+                                <td class="p-3 font-bold text-[#001011]">NAPALM</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Vendor-agnostic abstraction library with unified get_config() and get_facts() methods.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 1</td>
+                                <td class="p-3 font-bold text-[#001011]">Scrapli</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Ultra-fast asynchronous CLI screen-scraper for non-blocking concurrent collection (&lt;5ms).</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 1</td>
+                                <td class="p-3 font-bold text-[#001011]">Nornir</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Pluggable concurrent automation framework dispatching bulk compliance audits across entire fleet inventory.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+
+                            <!-- Layer 2 -->
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 2</td>
+                                <td class="p-3 font-bold text-[#001011]">Batfish</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">De facto industry standard for multi-vendor AST conversion, ACL simulation, and topology analysis.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 2</td>
+                                <td class="p-3 font-bold text-[#001011]">CiscoConfParse2</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-sky-100 text-sky-800 border border-sky-300 px-1.5 py-0.5 rounded-[6px]">GPL / Comm</span></td>
+                                <td class="p-3">Hierarchical parent-child regex parser for querying nested configuration stanzas (e.g. line vty, interfaces).</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 2</td>
+                                <td class="p-3 font-bold text-[#001011]">TextFSM & ntc-templates</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Template-based state machine parser maintained by Google & NTC with thousands of community templates.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 2</td>
+                                <td class="p-3 font-bold text-[#001011]">Cisco pyATS / Genie</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Enterprise multi-vendor parsing library normalizing 3,000+ commands into canonical Python models.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 2</td>
+                                <td class="p-3 font-bold text-[#001011]">TTP (Template Text Parser)</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MIT</span></td>
+                                <td class="p-3">High-speed regex and Jinja2-like semi-structured parser designed specifically for network CLI.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 2</td>
+                                <td class="p-3 font-bold text-[#001011]">hier_config</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Computes semantic differences and dependencies between current configurations and desired security baselines.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 2</td>
+                                <td class="p-3 font-bold text-[#001011]">Pyang & OpenConfig Models</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">BSD / Apache</span></td>
+                                <td class="p-3">Standardized, vendor-neutral YANG data models (RFC 6020 / RFC 7950) for AAA, ACL, BGP, and Interfaces.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+
+                            <!-- Layer 3 -->
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 3</td>
+                                <td class="p-3 font-bold text-[#001011]">Sentence-Transformers</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Vector embedding and cosine similarity engine matching novel vendor syntax to canonical security attributes.</td>
+                                <td class="p-3 font-mono text-[11px]">Person B</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 3</td>
+                                <td class="p-3 font-bold text-[#001011]">spaCy / HF Tokenizers</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MIT / Apache</span></td>
+                                <td class="p-3">CLI-specialized Named Entity Recognition extracting IPs, ports, cryptographic ciphers, and parameters.</td>
+                                <td class="p-3 font-mono text-[11px]">Person B</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 3</td>
+                                <td class="p-3 font-bold text-[#001011]">Microsoft Z3 SMT Solver</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MIT</span></td>
+                                <td class="p-3">System-2 Neuro-Symbolic formal verifier mathematically proving device security invariants over first-order logic.</td>
+                                <td class="p-3 font-mono text-[11px]">Person B</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+
+                            <!-- Layer 4 -->
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 4</td>
+                                <td class="p-3 font-bold text-[#001011]">Open Policy Agent (OPA)</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Declarative Rego policy engine encoding CIS Benchmarks and DISA STIGs as version-controlled code.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 4</td>
+                                <td class="p-3 font-bold text-[#001011]">OpenSCAP & SCAP Workbench</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-amber-100 text-amber-800 border border-amber-300 px-1.5 py-0.5 rounded-[6px]">LGPL 2.1</span></td>
+                                <td class="p-3">NIST-certified framework for generating and validating XCCDF 1.2 XML compliance benchmarks and OVAL tests.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 4</td>
+                                <td class="p-3 font-bold text-[#001011]">Chef InSpec</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Human-readable infrastructure testing framework exporting portable CIS and DISA STIG audit profiles.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 4</td>
+                                <td class="p-3 font-bold text-[#001011]">Checkov</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">Apache 2.0</span></td>
+                                <td class="p-3">Static analysis engine evaluating cloud firewalls, AWS Security Groups, and virtual perimeter rules.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 4</td>
+                                <td class="p-3 font-bold text-[#001011]">DefectDojo</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">BSD 3-Clause</span></td>
+                                <td class="p-3">Security orchestration and vulnerability management platform for tracking historical findings across enterprise nodes.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+
+                            <!-- Layer 5 -->
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 5</td>
+                                <td class="p-3 font-bold text-[#001011]">Ansible Core & Collections</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">GPL v3 / Apache</span></td>
+                                <td class="p-3">Multi-vendor network collections (cisco.ios, juniper.junos, arista.eos) generating executable remediation playbooks.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 5</td>
+                                <td class="p-3 font-bold text-[#001011]">Jinja2 Template Engine</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">BSD 3-Clause</span></td>
+                                <td class="p-3">Dynamic parameter rendering for exact vendor-specific CLI hardening scripts tailored to detected OS version.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 5</td>
+                                <td class="p-3 font-bold text-[#001011]">OpenTofu / Terraform</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MPL 2.0</span></td>
+                                <td class="p-3">Infrastructure-as-Code engine for generating remediation plans for cloud network security groups and ACLs.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+
+                            <!-- Layer 6 -->
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 6</td>
+                                <td class="p-3 font-bold text-[#001011]">ReportLab</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">BSD 3-Clause</span></td>
+                                <td class="p-3">High-fidelity programmatic PDF generator rendering certified audit certificates, gauge metrics, and SHA-512 seals.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 6</td>
+                                <td class="p-3 font-bold text-[#001011]">FastAPI + HTMX + Tailwind</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MIT</span></td>
+                                <td class="p-3">Zero-Node, pure hypermedia single-page reactive dashboard with sub-millisecond asynchronous REST endpoints.</td>
+                                <td class="p-3 font-mono text-[11px]">Person B</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                            <tr class="hover:bg-[#ededea]/60 transition">
+                                <td class="p-3 font-mono font-bold text-[#001011]">Layer 6</td>
+                                <td class="p-3 font-bold text-[#001011]">Native C11 Sovereign Core</td>
+                                <td class="p-3 font-mono text-[11px]"><span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded-[6px]">MIT / Sovereign</span></td>
+                                <td class="p-3">Compiled C11 engine with AVX-ready vector arithmetic, bit-exact FIPS 180-4 SHA-512, and microsecond rule execution.</td>
+                                <td class="p-3 font-mono text-[11px]">Person A</td>
+                                <td class="p-3 text-right font-mono text-[11px]"><span class="text-emerald-800 font-bold">OPERATIONAL</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-[#c1c4c2] py-4 px-6 text-center text-xs text-[#0f1e1f]/60 bg-[#fcfbf8]">
+        <p>Sentry-Grid Defense Compliance Engine • SIH26155 • National Technical Research Organisation (NTRO) • Built with HTMX, Tailwind, & Laya AI</p>
+    </footer>
+
+    <!-- CLIENT JAVASCRIPT FOR TABS, PRESETS & DYNAMIC TELEMETRY -->
+    <script>
+        const sampleConfigs = {
+            {% for s in Samples %}
+            "{{ s.ID }}": {{ s.Content }},
+            {% endfor %}
+        };
+
+        function showToast(msg) {
+            const toast = document.getElementById('cyber-toast');
+            const msgEl = document.getElementById('toast-message');
+            if (!toast || !msgEl) return;
+            msgEl.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        function detectSyntax(text) {
+            if (!text || !text.trim()) return "Awaiting Input...";
+            const t = text.toLowerCase();
+            if (t.includes("config system") || t.includes("config router") || t.includes("config firewall")) return "Fortinet FortiOS";
+            if (t.includes("<config") || t.includes("<devices>") || t.includes("<entry name=")) return "Palo Alto PAN-OS (XML)";
+            if (t.includes("device_metadata") || t.includes("bgp_neighbor") || (text.trim().startsWith("{") && t.includes("port"))) return "SONiC Linux (YANG/JSON)";
+            if (t.includes("system {") || t.includes("interfaces {") || t.includes("set system") || t.includes("protocols {")) return "Juniper Junos";
+            if (t.includes("transceiver qsfp") || t.includes("management api http-commands") || t.includes("spanning-tree mode mstp")) return "Arista EOS";
+            if (t.includes("sysname") || t.includes("user-interface vty") || t.includes("undo telnet")) return "Huawei VRP";
+            if (t.includes("set service ssh") || t.includes("set firewall")) return "VyOS Router";
+            if (t.includes("hostname") || t.includes("line vty") || t.includes("service password") || t.includes("interface ")) return "Cisco IOS / NX-OS";
+            return "Generic Multi-Vendor Network CLI";
+        }
+
+        function updateTextStats() {
+            const txt = document.getElementById('config-text');
+            if (!txt) return;
+            const val = txt.value;
+            const lines = val ? val.split(/\r\n|\r|\n/).length : 0;
+            const words = val.trim() ? val.trim().split(/\s+/).length : 0;
+            const chars = val.length;
+
+            const statLines = document.getElementById('stat-lines');
+            const statWords = document.getElementById('stat-words');
+            const statChars = document.getElementById('stat-chars');
+            const statVendor = document.getElementById('stat-vendor');
+
+            if (statLines) statLines.innerText = lines.toLocaleString();
+            if (statWords) statWords.innerText = words.toLocaleString();
+            if (statChars) statChars.innerText = chars.toLocaleString();
+            if (statVendor) statVendor.innerText = detectSyntax(val);
+        }
+
+        function clearConfigEditor() {
+            const txt = document.getElementById('config-text');
+            if (txt) {
+                txt.value = '';
+                updateTextStats();
+                showToast('Configuration editor cleared');
+            }
+        }
+
+        function loadPreset(id) {
+            if (sampleConfigs[id]) {
+                const txt = document.getElementById('config-text');
+                txt.value = sampleConfigs[id];
+                updateTextStats();
+                const auto = document.getElementById('auto-audit-toggle');
+                if (auto && auto.checked) {
+                    htmx.trigger('#audit-form', 'submit');
+                }
+                showToast(`Loaded ${id} hardware baseline`);
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const txt = document.getElementById('config-text');
+                txt.value = e.target.result;
+                updateTextStats();
+                const auto = document.getElementById('auto-audit-toggle');
+                if (auto && auto.checked) {
+                    htmx.trigger('#audit-form', 'submit');
+                }
+                showToast(`Ingested ${file.name}`);
+            };
+            reader.readAsText(file);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTextStats();
+            const textarea = document.getElementById('config-text');
+            if (!textarea) return;
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                textarea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    textarea.classList.add('border-[#001011]', 'bg-[#fcfbf8]');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                textarea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    textarea.classList.remove('border-[#001011]', 'bg-[#fcfbf8]');
+                }, false);
+            });
+
+            textarea.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        textarea.value = ev.target.result;
+                        updateTextStats();
+                        const auto = document.getElementById('auto-audit-toggle');
+                        if (auto && auto.checked) {
+                            htmx.trigger('#audit-form', 'submit');
+                        }
+                        showToast(`Dropped ${files[0].name}`);
+                    };
+                    reader.readAsText(files[0]);
+                }
+            }, false);
+        });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-[#001011]', 'text-[#001011]', 'font-medium');
+                btn.classList.add('border-transparent', 'text-[#0f1e1f]/60');
+            });
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-[#0f1e1f]/60');
+            activeBtn.classList.add('border-[#001011]', 'text-[#001011]', 'font-medium');
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard');
+            });
+        }
+
+        function downloadScript(filename, elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const anchor = document.createElement('a');
+            anchor.download = filename;
+            anchor.href = window.URL.createObjectURL(blob);
+            anchor.click();
+            showToast(`Downloading ${filename}`);
+        }
+
+        function openFixModal(ruleId, title, severity, remCli, rollCli) {
+            document.getElementById('modal-rule-id').innerText = ruleId + ' • ' + severity;
+            document.getElementById('modal-rule-title').innerText = title;
+            document.getElementById('modal-remediation-cli').innerText = remCli;
+            document.getElementById('modal-rollback-cli').innerText = rollCli;
+            document.getElementById('fix-modal').showModal();
+        }
+
+        function verifyBlockSeal(seal) {
+            switchTab('ledger-hub');
+            const input = document.getElementById('query-hash-input');
+            if (input) {
+                input.value = seal;
+                htmx.trigger(input.form, 'submit');
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    </script>
+
+    <!-- DYNAMIC CYBER-DEFENSE TOAST NOTIFICATION (Swiss Charcoal Pill) -->
+    <div id="cyber-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2.5 bg-[#001011] text-[#fcfbf8] border border-[#c1c4c2] px-4 py-2.5 rounded-[20px] text-xs font-mono">
+        <span class="h-2 w-2 rounded-full bg-[#fd5321] animate-ping"></span>
+        <span id="toast-message">Action completed successfully</span>
+    </div>
+
+    <!-- CYBER-DEFENSE ACTIONABLE REMEDIATION MODAL (Swiss Bone Dialog) -->
+    <dialog id="fix-modal" class="bg-[#fcfbf8] border border-[#c1c4c2] text-[#001011] rounded-[20px] p-6 max-w-2xl w-full backdrop:bg-[#001011]/30 space-y-4">
+        <div class="flex items-center justify-between border-b border-[#c1c4c2] pb-3.5">
+            <div>
+                <span id="modal-rule-id" class="text-xs font-mono text-[#001011] font-semibold"></span>
+                <h3 id="modal-rule-title" class="text-sm font-semibold text-[#001011] mt-0.5"></h3>
+            </div>
+            <button type="button" onclick="document.getElementById('fix-modal').close()" class="text-[#0f1e1f] hover:text-[#001011] text-lg font-bold p-1 rounded-full hover:bg-[#ededea] transition">✕</button>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                    <span class="font-semibold text-[#001011] flex items-center gap-1.5">
+                        <span class="h-2 w-2 rounded-full bg-[#001011]"></span> Hardening Commands (To Apply):
+                    </span>
+                    <button type="button" onclick="copyToClipboard('modal-remediation-cli')" class="text-[11px] text-[#001011] hover:text-[#fd5321] font-medium flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                        <span>Copy Fix</span>
+                    </button>
+                </div>
+                <pre id="modal-remediation-cli" class="bg-[#ededea] p-3.5 rounded-[14px] border border-[#c1c4c2] text-xs font-mono text-[#001011] max-h-36 overflow-y-auto select-all leading-relaxed"></pre>
+            </div>
+            <div>
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                    <span class="font-semibold text-[#001011] flex items-center gap-1.5">
+                        <span class="h-2 w-2 rounded-full bg-[#fd5321]"></span> Pre-Flight Reverse Rollback (Safe Revert):
+                    </span>
+                    <button type="button" onclick="copyToClipboard('modal-rollback-cli')" class="text-[11px] text-[#001011] hover:text-[#fd5321] font-medium flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
+                        <span>Copy Rollback</span>
+                    </button>
+                </div>
+                <pre id="modal-rollback-cli" class="bg-[#ededea] p-3.5 rounded-[14px] border border-[#c1c4c2] text-xs font-mono text-[#001011] max-h-36 overflow-y-auto select-all leading-relaxed"></pre>
+            </div>
+        </div>
+        <div class="flex justify-between items-center pt-3.5 border-t border-[#c1c4c2] text-xs">
+            <button type="button" onclick="switchTab('remediation-hub'); document.getElementById('fix-modal').close();" class="bg-[#001011] hover:bg-[#0f1e1f] text-[#fcfbf8] px-5 py-2 rounded-[24px] font-medium transition">
+                Open Full Remediation Hub & Playbooks →
+            </button>
+            <button type="button" onclick="document.getElementById('fix-modal').close()" class="bg-[#ededea] hover:bg-[#e2e2de] text-[#001011] border border-[#c1c4c2] px-4 py-2 rounded-[24px] transition">
+                Close
+            </button>
+        </div>
+    </dialog>
+</body>
+</html>

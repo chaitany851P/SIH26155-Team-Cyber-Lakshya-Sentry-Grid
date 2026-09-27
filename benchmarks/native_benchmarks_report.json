@@ -1,0 +1,38 @@
+[
+  {
+    "benchmark": "FIPS 180-4 SHA-512 Hashing",
+    "iterations": 20000,
+    "native_ops_per_sec": 69317.3,
+    "python_ops_per_sec": 183516.5,
+    "native_latency_us": 14.426,
+    "python_latency_us": 5.449,
+    "speedup_ratio": 0.38
+  },
+  {
+    "benchmark": "16-Leaf Merkle Tree Root Hash",
+    "iterations": 5000,
+    "native_ops_per_sec": 5895.9,
+    "python_ops_per_sec": 2602.4,
+    "native_latency_us": 169.61,
+    "python_latency_us": 384.264,
+    "speedup_ratio": 2.27
+  },
+  {
+    "benchmark": "24-Rule Deterministic Compliance Audit",
+    "iterations": 2000,
+    "native_ops_per_sec": 91.6,
+    "python_ops_per_sec": 92.8,
+    "native_latency_us": 10911.179,
+    "python_latency_us": 10776.006,
+    "speedup_ratio": 0.99
+  },
+  {
+    "benchmark": "64-Dim Vector Cosine Similarity",
+    "iterations": 50000,
+    "native_ops_per_sec": 8434.4,
+    "python_ops_per_sec": 6020.1,
+    "native_latency_us": 118.562,
+    "python_latency_us": 166.111,
+    "speedup_ratio": 1.4
+  }
+]

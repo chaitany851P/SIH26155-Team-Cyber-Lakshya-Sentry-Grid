@@ -1,0 +1,35 @@
+{
+  "DEVICE_METADATA": {
+    "localhost": {
+      "hostname": "leaf-sonic-fabric-04",
+      "hwsku": "Dell-EMC-S5248F-ON",
+      "type": "LeafRouter",
+      "platform": "x86_64-dell_s5248f_c3538-r0",
+      "mac": "52:54:00:12:34:56"
+    }
+  },
+  "FEATURE": {
+    "telemetry": {
+      "status": "enabled"
+    },
+    "ssh": {
+      "status": "enabled"
+    },
+    "snmp": {
+      "status": "disabled"
+    }
+  },
+  "MGMT_INTERFACE": {
+    "eth0": {
+      "mgmt_ip": "10.250.0.14/24",
+      "gwaddr": "10.250.0.1"
+    }
+  },
+  "CUSTOM_ADMIN_POLICY": {
+    "idle-timeout 10": "enforced",
+    "admin-telnet disable": "true",
+    "remote-syslog host 10.50.100.1": "active",
+    "custom-access line vty exec-timeout 10": "configured",
+    "crypto key generate rsa modulus 2048": "present"
+  }
+}

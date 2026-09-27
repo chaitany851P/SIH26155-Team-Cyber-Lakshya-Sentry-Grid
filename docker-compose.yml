@@ -1,0 +1,33 @@
+# ==============================================================================
+# SENTRY-GRID DOCKER COMPOSE ORCHESTRATION
+# National Technical Research Organisation (NTRO) • SIH26155
+# Single-Command Air-Gapped Local / Enclave Deployment: docker compose up -d
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  sentrygrid:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: registry.internal.defense.gov.in/sentrygrid:latest
+    container_name: sentrygrid-auditor
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    environment:
+      - PORT=8090
+      - PYTHONUNBUFFERED=1
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8090/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    labels:
+      org.ntro.classification: "DEFENSE-RESTRICTED"
+      org.ntro.problem_id: "SIH26155"
+      org.ntro.engine: "SENTRY-GRID-LAYA-C11"

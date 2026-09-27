@@ -1,0 +1,127 @@
+{
+  "RULE-e0cc4c81ac": {
+    "rule_id": "RULE-e0cc4c81ac",
+    "pattern_regex": "idle\\-timeout\\ ([0-9]+)",
+    "target_attribute": "aaa.session_timeout_minutes",
+    "assigned_value": "15",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T10:00:32.177266+00:00",
+    "hit_count": 29,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.0043,
+      "updated_category": "aaa.session_timeout_minutes"
+    }
+  },
+  "RULE-db5d8bcdf9": {
+    "rule_id": "RULE-db5d8bcdf9",
+    "pattern_regex": "admin\\-telnet\\ disable",
+    "target_attribute": "management_access.telnet_disabled",
+    "assigned_value": "disable",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T10:00:33.635608+00:00",
+    "hit_count": 8,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.0016,
+      "updated_category": "management_access.telnet_disabled"
+    }
+  },
+  "RULE-e093714755": {
+    "rule_id": "RULE-e093714755",
+    "pattern_regex": "custom\\-access\\-daemon\\ telnet\\-deny\\-always",
+    "target_attribute": "management_access.telnet_disabled",
+    "assigned_value": "true",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T17:21:47.459962+00:00",
+    "hit_count": 2,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.0306,
+      "updated_category": "management_access.telnet_disabled"
+    }
+  },
+  "RULE-d0a2634600": {
+    "rule_id": "RULE-d0a2634600",
+    "pattern_regex": "chrony\\-server\\ ([0-9]+)\\.([0-9]+)\\.([0-9]+)\\.([0-9]+)",
+    "target_attribute": "time_synchronization.ntp_servers",
+    "assigned_value": "10.20.30.40",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T17:21:47.559956+00:00",
+    "hit_count": 1,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.1803,
+      "updated_category": "time_synchronization.ntp_servers"
+    }
+  },
+  "RULE-34f1c576fe": {
+    "rule_id": "RULE-34f1c576fe",
+    "pattern_regex": "exec\\-timeout\\ ([0-9]+)\\ ([0-9]+)",
+    "target_attribute": "session_timeout",
+    "assigned_value": "900",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T17:28:36.092632+00:00",
+    "hit_count": 1,
+    "neural_training": {
+      "status": "ERROR",
+      "message": "Unknown category: session_timeout"
+    }
+  },
+  "RULE-4d365a4390": {
+    "rule_id": "RULE-4d365a4390",
+    "pattern_regex": "custom\\-timeout\\ ([0-9]+)",
+    "target_attribute": "aaa.session_timeout_minutes",
+    "assigned_value": "450",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T17:28:46.811498+00:00",
+    "hit_count": 1,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.0023,
+      "updated_category": "aaa.session_timeout_minutes"
+    }
+  },
+  "RULE-84e831f4ee": {
+    "rule_id": "RULE-84e831f4ee",
+    "pattern_regex": "remote\\-syslog\\ host\\ ([0-9]+)\\.([0-9]+)\\.([0-9]+)\\.([0-9]+)",
+    "target_attribute": "logging_audit.syslog_servers",
+    "assigned_value": "10.99.100.1",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T10:00:35.201788+00:00",
+    "hit_count": 1,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.0024,
+      "updated_category": "logging_audit.syslog_servers"
+    }
+  },
+  "RULE-5d254ecbe1": {
+    "rule_id": "RULE-5d254ecbe1",
+    "pattern_regex": "service\\-http\\ server\\ disable",
+    "target_attribute": "management_access.http_server_disabled",
+    "assigned_value": "disable",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T10:00:36.398806+00:00",
+    "hit_count": 1,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.0003,
+      "updated_category": "management_access.http_server_disabled"
+    }
+  },
+  "RULE-c2ca2722c9": {
+    "rule_id": "RULE-c2ca2722c9",
+    "pattern_regex": "crypt\\-rsa\\ modulus\\ ([0-9]+)",
+    "target_attribute": "cryptography.rsa_key_length_bits",
+    "assigned_value": "4096",
+    "vendor_scope": "all",
+    "created_at": "2026-09-26T10:00:38.515469+00:00",
+    "hit_count": 1,
+    "neural_training": {
+      "status": "TRAINED",
+      "loss": 0.0033,
+      "updated_category": "cryptography.rsa_key_length_bits"
+    }
+  }
+}

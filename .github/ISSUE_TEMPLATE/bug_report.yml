@@ -1,0 +1,33 @@
+name: Bug report
+description: Create a report to help us improve Sentry-Grid
+title: "[BUG]: "
+labels: ["bug"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue in Sentry-Grid.
+  - type: input
+    id: vendor
+    attributes:
+      label: Target Vendor / Platform
+      description: What network vendor configuration is involved? (e.g., Cisco IOS-XE, Juniper JunOS, Fortinet FortiOS)
+      placeholder: Cisco IOS 15.x
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe what bug or unexpected audit behavior occurred.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen according to CIS/DISA STIG benchmarks?
+    validations:
+      required: true

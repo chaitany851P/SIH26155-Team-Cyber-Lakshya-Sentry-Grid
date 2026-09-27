@@ -1,0 +1,87 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sentrygrid-hpa
+  namespace: ntro-secops
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sentrygrid-compliance-auditor
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sentrygrid-nightly-drift-audit
+  namespace: ntro-secops
+spec:
+  schedule: "0 0 * * *" # Daily at midnight UTC
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: drift-scanner
+            image: registry.internal.defense.gov.in/sentrygrid:latest
+            command: ["/app/sentrygrid"]
+            args: ["--mode=nightly-drift-audit", "--target-zone=perimeter-defense"]
+            securityContext:
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
+              runAsUser: 65532
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sentrygrid-airgap-policy
+  namespace: ntro-secops
+spec:
+  podSelector:
+    matchLabels:
+      app: sentrygrid
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow internal web dashboard traffic from authorized jump-hosts only
+  - from:
+    - ipBlock:
+        cidr: 10.200.0.0/16
+    ports:
+    - protocol: TCP
+      port: 8080
+  egress:
+  # Allow SSH strictly to internal network device management subnet (port 22)
+  - to:
+    - ipBlock:
+        cidr: 10.10.0.0/16
+    ports:
+    - protocol: TCP
+      port: 22
+  # Allow internal DNS cluster resolution
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+  # DENY ALL PUBLIC INTERNET EGRESS (AIR-GAPPED SOVEREIGN LOCKDOWN)

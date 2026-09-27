@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CanonicalSecurityBaselineModel",
+  "description": "The unified, vendor-neutral data contract between Person A (parsers/compliance) and Person B (AI/UI/storage).",
+  "metadata": {
+    "audit_id": "AUD-2026-0925-001",
+    "timestamp": "2026-09-25T13:30:00Z",
+    "schema_version": "1.0.0",
+    "hash_algorithm": "SHA-512",
+    "cryptographic_seal": "a3f5c9e2b8d147...[128-char hex string computed across audit data]..."
+  },
+  "device_info": {
+    "hostname": "core-router-01",
+    "vendor": "Cisco",
+    "os_family": "IOS-XE",
+    "os_version": "17.9.4a",
+    "model": "Catalyst 9300",
+    "serial_number": "FOC24190ABC",
+    "management_ip": "10.10.10.1",
+    "raw_config_sha512": "e4b2a19c...[128-char hex]..."
+  },
+  "normalized_security_baseline": {
+    "aaa": {
+      "password_encryption_enabled": false,
+      "min_password_length": 8,
+      "enable_secret_type": "type_5_md5",
+      "login_banner_configured": false,
+      "login_banner_text": null,
+      "session_timeout_minutes": 0,
+      "failed_logins_max_attempts": 3,
+      "lockout_duration_minutes": 15,
+      "external_auth_configured": false
+    },
+    "management_access": {
+      "ssh_enabled": true,
+      "ssh_version": 1,
+      "telnet_disabled": false,
+      "http_server_disabled": false,
+      "https_server_enabled": true,
+      "snmp_v1_v2_disabled": false,
+      "snmp_v3_enabled": false,
+      "snmp_v3_encryption": null,
+      "vty_acl_applied": false,
+      "console_timeout_minutes": 0
+    },
+    "logging_audit": {
+      "syslog_servers": [],
+      "logging_buffered_level": "debugging",
+      "logging_timestamps_detail": "uptime",
+      "audit_trail_enabled": false,
+      "console_logging_enabled": true
+    },
+    "time_synchronization": {
+      "ntp_servers": [
+        "10.10.10.50"
+      ],
+      "ntp_authentication_enabled": false,
+      "timezone": "UTC"
+    },
+    "network_defense": {
+      "ip_source_route_disabled": false,
+      "icmp_redirects_disabled": false,
+      "proxy_arp_disabled": false,
+      "syn_flood_protection_enabled": false,
+      "unicast_rpf_enabled": false
+    },
+    "cryptography": {
+      "tls_min_version": "1.0",
+      "weak_ciphers_disabled": false,
+      "rsa_key_length_bits": 1024
+    }
+  },
+  "unmapped_lines": [
+    {
+      "line_id": "unmapped-001",
+      "line_number": 42,
+      "raw_text": "set system login idle-timeout 10",
+      "context_block": "system.login",
+      "ai_analysis": {
+        "suggested_category": "aaa.session_timeout_minutes",
+        "confidence_score": 0.88,
+        "extracted_value": 10,
+        "status": "MANUAL_REVIEW_REQUIRED"
+      }
+    }
+  ],
+  "compliance_evaluation": {
+    "summary": {
+      "total_rules_evaluated": 24,
+      "passed_count": 8,
+      "failed_count": 14,
+      "warning_count": 1,
+      "manual_review_count": 1,
+      "overall_compliance_percentage": 33.3,
+      "risk_level": "CRITICAL"
+    },
+    "framework_scores": {
+      "cis_benchmark_score": 35.0,
+      "disa_stig_score": 28.5,
+      "nist_sp_800_53_score": 40.0,
+      "iso_27001_score": 38.0
+    },
+    "findings": [
+      {
+        "finding_id": "FIND-001",
+        "rule_id": "DISA-STIG-V-215000",
+        "title": "Insecure Telnet Management Protocol Must Be Disabled",
+        "frameworks": [
+          "DISA_STIG",
+          "CIS",
+          "NIST_SP_800_53",
+          "ISO_27001"
+        ],
+        "control_reference": "DISA STIG: V-215000 (CAT I) | NIST: SC-8 | CIS: 1.2.1 | ISO: A.8.20",
+        "severity": "CRITICAL",
+        "status": "FAIL",
+        "found_value": "Telnet is enabled on VTY lines 0-4; transport input includes telnet.",
+        "expected_value": "Telnet disabled; only transport input ssh allowed.",
+        "impact": "Attackers can intercept cleartext management credentials over the network.",
+        "remediation_cli": "configure terminal\nline vty 0 4\n no transport input all\n transport input ssh\nend\nwrite memory",
+        "rollback_cli": "configure terminal\nline vty 0 4\n transport input all\nend\nwrite memory"
+      },
+      {
+        "finding_id": "FIND-002",
+        "rule_id": "CIS-CISCO-1.2.4",
+        "title": "SSH Protocol Version 2 Must Be Enforced",
+        "frameworks": [
+          "CIS",
+          "DISA_STIG",
+          "NIST_SP_800_53"
+        ],
+        "control_reference": "CIS: 1.2.4 | DISA STIG: V-215001 (CAT I) | NIST: SC-13",
+        "severity": "CRITICAL",
+        "status": "FAIL",
+        "found_value": "SSH version 1 enabled with a weak 1024-bit RSA key.",
+        "expected_value": "SSH version 2 enforced with minimum 2048-bit RSA key modulus.",
+        "impact": "SSHv1 contains cryptographic flaws allowing eavesdropping and session hijacking.",
+        "remediation_cli": "configure terminal\ncrypto key generate rsa modulus 2048\nip ssh version 2\nend\nwrite memory",
+        "rollback_cli": "configure terminal\nip ssh version 1\nend\nwrite memory"
+      }
+    ]
+  }
+}
